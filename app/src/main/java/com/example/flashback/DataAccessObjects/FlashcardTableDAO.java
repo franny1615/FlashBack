@@ -17,11 +17,11 @@ import io.reactivex.Flowable;
 public interface FlashcardTableDAO {
 
     /**
-     * inserts a card into database table, if a duplicate of a flashcard is found it will replace it in the table
+     * inserts a card into database table
      * @param flashcard the object that represents a row in the SQLite table
      * @return the id of the newly created row
      * */
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     long insertFlashcardIntoDB(FlashcardEntity flashcard);
 
 

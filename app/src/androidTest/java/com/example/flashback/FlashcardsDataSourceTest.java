@@ -3,11 +3,14 @@ package com.example.flashback;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.room.Room;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.example.flashback.DataAccessObjects.FlashcardTableDAO;
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
+import com.example.flashback.Databases.FlashcardsDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,13 +37,13 @@ public class FlashcardsDataSourceTest {
     }
 
     @Test
-    public void writeFlashcardAndReadItBack() throws Exception {
+    public void writeFlashcardAndReadItBack() {
         flashcardsDS.deleteAllFlashcards();
         //
         FlashcardEntity flashcard = new FlashcardEntity();
         flashcard.setFrontText("first");
         flashcard.setBackText("firstback");
-
+        //
         flashcardsDS.insertFlashcardIntoDB(flashcard);
         List<FlashcardEntity> cards = flashcardsDS.loadAllFlashcardsFromDB();
         //
@@ -49,18 +52,63 @@ public class FlashcardsDataSourceTest {
     }
 
     @Test
-    public void deleteCard() throws Exception {
+    public void deleteCard() {
         flashcardsDS.deleteAllFlashcards();
         //
         FlashcardEntity flashcard = new FlashcardEntity();
         flashcard.setFrontText("first");
         flashcard.setBackText("firstback");
-
+        //
         flashcardsDS.insertFlashcardIntoDB(flashcard);
-
-        flashcardsDS.deleteFlashcardInDB(flashcard);
+        //
         List<FlashcardEntity> cards = flashcardsDS.loadAllFlashcardsFromDB();
+        flashcard.setId(cards.get(0).getId());
+        //
+        flashcardsDS.deleteFlashcardInDB(flashcard);
+        cards = flashcardsDS.loadAllFlashcardsFromDB();
         //
         assertEquals(0,cards.size());
+    }
+
+    @Test
+    public void duplicateCardTest() {
+        flashcardsDS.deleteAllFlashcards();
+        //
+        FlashcardEntity flashcard = new FlashcardEntity();
+        flashcard.setFrontText("first");
+        flashcard.setBackText("firstback");
+        flashcard.setId(1);
+        //
+        flashcardsDS.insertFlashcardIntoDB(flashcard);
+        flashcardsDS.insertFlashcardIntoDB(flashcard);
+        //
+        List<FlashcardEntity> cards = flashcardsDS.loadAllFlashcardsFromDB();
+        //
+        assertEquals(1,cards.size());
+    }
+
+    @Test
+    public void updateCardTest() {
+        flashcardsDS.deleteAllFlashcards();
+        List<FlashcardEntity> cards;
+        //
+        FlashcardEntity flashcard = new FlashcardEntity();
+        flashcard.setFrontText("first");
+        flashcard.setBackText("firstback");
+        flashcard.setId(1);
+        //
+        flashcardsDS.insertFlashcardIntoDB(flashcard);
+        cards = flashcardsDS.loadAllFlashcardsFromDB();
+        assertEquals("first",cards.get(0).getFrontText());
+        assertEquals("firstback",cards.get(0).getBackText());
+        //
+        flashcard.setFrontText("dude");
+        flashcard.setBackText("card");
+        //
+        flashcardsDS.updateFlashcardInDB(flashcard);
+        cards = flashcardsDS.loadAllFlashcardsFromDB();
+        //
+        assertEquals("dude",cards.get(0).getFrontText());
+        assertEquals("card",cards.get(0).getBackText());
     }
 }

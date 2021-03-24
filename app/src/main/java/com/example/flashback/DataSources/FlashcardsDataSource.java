@@ -13,6 +13,7 @@ import java.util.List;
 // and also makes the database connection for us.
 public class FlashcardsDataSource {
     private final FlashcardTableDAO flashcardDAO;
+    private List<FlashcardEntity> cards;
 
     /**
      * establishes the connection to the database and initializes
@@ -25,7 +26,9 @@ public class FlashcardsDataSource {
     }
 
     public void insertFlashcardIntoDB(FlashcardEntity flashcard) {
-        long rowID = flashcardDAO.insertFlashcardIntoDB(flashcard);
+        if(!isFlashcardDuplicate(flashcard)) {
+            long rowID = flashcardDAO.insertFlashcardIntoDB(flashcard);
+        }
     }
 
     public void updateFlashcardInDB(FlashcardEntity flashcard){
@@ -42,5 +45,18 @@ public class FlashcardsDataSource {
 
     public void deleteAllFlashcards() {
         flashcardDAO.deleteAllFlashcards();
+    }
+
+    public boolean isFlashcardDuplicate(FlashcardEntity flashcard) {
+        boolean isDuplicate = false;
+        cards = flashcardDAO.loadAllFlashcardsFromDB().blockingFirst();
+        for(FlashcardEntity existingFlashcard: cards) {
+            if(existingFlashcard.getFrontText().equals(flashcard.getFrontText()) &&
+               existingFlashcard.getBackText().equals(flashcard.getBackText())) {
+                isDuplicate = true;
+                break;
+            }
+        }
+        return isDuplicate;
     }
 }
