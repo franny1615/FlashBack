@@ -31,5 +31,4 @@ public abstract class FlashcardsDatabase extends RoomDatabase {
     // abstract methods for exposing our data access objects
     // for each table in our database
     public abstract FlashcardTableDAO flashcardDAO();
-
 }
