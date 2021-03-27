@@ -74,6 +74,18 @@ public class FlashcardsDataSource {
         }
     }
 
+    public FlashcardEntity getSingleFlashcardById(long id) {
+        final FlashcardEntity[] flashcard = new FlashcardEntity[1];
+        Thread getSingleCard = new Thread(()-> flashcard[0] = flashcardDAO.getSingleFlashcardById(id));
+        getSingleCard.start();
+        try {
+            getSingleCard.join();
+        }catch (Exception e) {
+            Log.d("GETSINGLEFLASHCARDBYID:"," error in getSingleFlashcardById");
+        }
+        return flashcard[0];
+    }
+
     public boolean isFlashcardDuplicate(FlashcardEntity flashcard) {
         boolean isDuplicate = false;
         cards = flashcardDAO.loadAllFlashcardsFromDB().blockingFirst();

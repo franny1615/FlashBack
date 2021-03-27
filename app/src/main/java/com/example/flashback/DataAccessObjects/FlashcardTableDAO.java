@@ -51,4 +51,7 @@ public interface FlashcardTableDAO {
 
     @Query("DELETE FROM flashcard_table")
     void deleteAllFlashcards();
+
+    @Query("SELECT * FROM flashcard_table WHERE id=:id")
+    FlashcardEntity getSingleFlashcardById(long id);
 }

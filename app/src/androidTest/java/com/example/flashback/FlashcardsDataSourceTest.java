@@ -111,4 +111,29 @@ public class FlashcardsDataSourceTest {
         assertEquals("dude",cards.get(0).getFrontText());
         assertEquals("card",cards.get(0).getBackText());
     }
+
+    @Test
+    public void grabOneCardByIdTest() {
+        flashcardsDS.deleteAllFlashcards();
+        FlashcardEntity flashcard = new FlashcardEntity();
+        flashcard.setFrontText("first");
+        flashcard.setBackText("firstback");
+        //
+        flashcardsDS.insertFlashcardIntoDB(flashcard);
+        //
+        FlashcardEntity flashcard2 = new FlashcardEntity();
+        flashcard2.setFrontText("second");
+        flashcard2.setBackText("secondback");
+        //
+        flashcardsDS.insertFlashcardIntoDB(flashcard2);
+        //
+        List<FlashcardEntity> cards = flashcardsDS.loadAllFlashcardsFromDB();
+        flashcard2.setId(cards.get(1).getId());
+        flashcard.setId(cards.get(0).getId());
+        //
+        FlashcardEntity get2 = flashcardsDS.getSingleFlashcardById(flashcard2.getId());
+        assertEquals(get2.getFrontText(),flashcard2.getFrontText());
+        FlashcardEntity get1 = flashcardsDS.getSingleFlashcardById(flashcard.getId());
+        assertEquals(get1.getFrontText(),flashcard.getFrontText());
+    }
 }
