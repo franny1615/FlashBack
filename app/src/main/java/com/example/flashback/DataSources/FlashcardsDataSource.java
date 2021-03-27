@@ -1,6 +1,7 @@
 package com.example.flashback.DataSources;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.flashback.DataAccessObjects.FlashcardTableDAO;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
@@ -26,17 +27,37 @@ public class FlashcardsDataSource {
     }
 
     public void insertFlashcardIntoDB(FlashcardEntity flashcard) {
-        if(!isFlashcardDuplicate(flashcard)) {
-            long rowID = flashcardDAO.insertFlashcardIntoDB(flashcard);
+        Thread insertThread = new Thread(() -> {
+            if(!isFlashcardDuplicate(flashcard)) {
+                long rowID = flashcardDAO.insertFlashcardIntoDB(flashcard);
+            }
+        });
+        insertThread.start();
+        try{
+            insertThread.join();
+        } catch (Exception e) {
+            Log.d("INSERT: ", "error in insertFlashcardIntoDB");
         }
     }
 
     public void updateFlashcardInDB(FlashcardEntity flashcard){
-        int rowsAffected = flashcardDAO.updateFlashcardInDB(flashcard);
+        Thread updateThread = new Thread(() -> flashcardDAO.updateFlashcardInDB(flashcard));
+        updateThread.start();
+        try{
+            updateThread.join();
+        } catch (Exception e) {
+            Log.d("UPDATE: ", "error in updateFlashcardIntoDB");
+        }
     }
 
     public void deleteFlashcardInDB(FlashcardEntity flashcard) {
-        int rowsAffected = flashcardDAO.deleteFlashcardInDB(flashcard);
+        Thread deleteThread = new Thread(() -> flashcardDAO.deleteFlashcardInDB(flashcard));
+        deleteThread.start();
+        try {
+            deleteThread.join();
+        } catch (Exception e) {
+            Log.d("DELETE:"," error in deleteFlashcardInDB");
+        }
     }
 
     public List<FlashcardEntity> loadAllFlashcardsFromDB() {
@@ -44,7 +65,13 @@ public class FlashcardsDataSource {
     }
 
     public void deleteAllFlashcards() {
-        flashcardDAO.deleteAllFlashcards();
+        Thread deleteAll = new Thread(flashcardDAO::deleteAllFlashcards);
+        deleteAll.start();
+        try{
+            deleteAll.join();
+        } catch (Exception e) {
+            Log.d("DELETEALL::","error in deleteAll");
+        }
     }
 
     public boolean isFlashcardDuplicate(FlashcardEntity flashcard) {
