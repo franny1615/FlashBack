@@ -10,7 +10,6 @@ import android.widget.EditText;
 import com.example.flashback.EditCard.EditFlashCardActivity;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
