@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">FlashBack</string>
+    <string name="front_title">Front</string>
+    <string name="button_send">Send</string>
+    <string name="edit_message">Edit message</string>
+    <string name="open_boiler_button">Open Boiler</string>
+    <string name="back_title">Back</string>
+    <string name="edit_button">Edit</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="edit_screen_button">EDIT CARD</string>
+    <string name="front_edit">Front Edit</string>
 </resources>
