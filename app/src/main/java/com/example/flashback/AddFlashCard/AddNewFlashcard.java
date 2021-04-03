@@ -25,16 +25,22 @@ public class AddNewFlashcard extends AppCompatActivity {
         FlashcardEntity flashcard = new FlashcardEntity();
         FlashcardsDataSource flashcardDS = new FlashcardsDataSource(this);
 
+        long lastKnownId = getIntent().getLongExtra("LAST_KNOWN_ID",0L);
+
         EditText frontCard = findViewById(R.id.new_card_front_screen);
         EditText backCard = findViewById(R.id.new_card_back_screen);
         flashcard.setFrontText(frontCard.getText().toString());
         flashcard.setBackText(backCard.getText().toString());
+        flashcard.setId(lastKnownId+1);
 
         flashcardDS.insertFlashcardIntoDB(flashcard);
 
-        long lastKnownId = getIntent().getLongExtra("LAST_KNOWN_ID",0L);
         Intent intent = new Intent();
-        intent.putExtra("ID_NEW_CARD",lastKnownId+1);
+        if(flashcardDS.getSingleFlashcardById(flashcard.getId()) == null) {
+            intent.putExtra("ID_NEW_CARD",-1L);
+        }else{
+            intent.putExtra("ID_NEW_CARD",lastKnownId+1);
+        }
         setResult(RESULT_OK, intent);
         finish();
     }

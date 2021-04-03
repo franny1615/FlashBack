@@ -31,6 +31,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
+        SharedPreferences shared = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
+        SharedPreferences.Editor shareEdit = shared.edit();
+        shareEdit.putLong("ID_OF_EDITED_CARD",-1L);
+        shareEdit.putInt("POSITION_IN_MEMORY",-1);
+        shareEdit.apply();
+        //
         flashcardDS = new FlashcardsDataSource(this);
         List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
         //
@@ -51,20 +57,31 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences editedCardStuff = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
         int position = editedCardStuff.getInt("POSITION_IN_MEMORY",-1);
         long idOfChangedCard = editedCardStuff.getLong("ID_OF_EDITED_CARD",-1L);
-        if( (position != -1) && (idOfChangedCard != -1L) ){
+
+        if((position != -1) && (idOfChangedCard != -1L)){
             FlashcardEntity card = adapter.mData.get(position);
             FlashcardEntity cardFromDB = flashcardDS.getSingleFlashcardById(idOfChangedCard);
             card.setFrontText(cardFromDB.getFrontText());
             card.setBackText(cardFromDB.getBackText());
             adapter.mData.set(position,card);
             adapter.notifyDataSetChanged();
+            //
+            SharedPreferences shared = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
+            SharedPreferences.Editor shareEdit = shared.edit();
+            shareEdit.putLong("ID_OF_EDITED_CARD",-1L);
+            shareEdit.putInt("POSITION_IN_MEMORY",-1);
+            shareEdit.apply();
         }
     }
 
     public void addAFlashcard(View view){
         Intent intent = new Intent(this, AddNewFlashcard.class);
         int size = adapter.mData.size();
-        intent.putExtra("LAST_KNOWN_ID",adapter.mData.get(size-1).getId());
+        long lastKnownId = 0L;
+        if(size > 0) {
+            lastKnownId = adapter.mData.get(size-1).getId();
+        }
+        intent.putExtra("LAST_KNOWN_ID",lastKnownId);
         startActivityForResult(intent, ADD_REQUEST_CODE);
     }
 
@@ -74,9 +91,12 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ADD_REQUEST_CODE) {
                 if (data != null){
-                    FlashcardEntity newestCard = flashcardDS.getSingleFlashcardById(data.getLongExtra("ID_NEW_CARD",0L));
-                    adapter.mData.add(newestCard);
-                    adapter.notifyDataSetChanged();
+                    long id = data.getLongExtra("ID_NEW_CARD",-1L);
+                    if(id != -1){
+                        FlashcardEntity newestCard = flashcardDS.getSingleFlashcardById(id);
+                        adapter.mData.add(newestCard);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
