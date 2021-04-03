@@ -10,12 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FlashBack">
 
-        <!-- Tester Only - Delete FrontCardView and BoilerPlate Activities -->
-        <activity android:name=".EditCard.EditFlashCardActivity"
+        <activity android:name=".EditCard.EditFlashCard"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity android:name=".EditCard.EditFlashCardFrontActivity"
-            android:parentActivityName=".EditCard.EditFlashCardActivity">
+
+        <activity android:name=".AddFlashCard.AddNewFlashcard"
+            android:parentActivityName=".MainActivity">
         </activity>
 
         <activity android:name=".MainActivity">
