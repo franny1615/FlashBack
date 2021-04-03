@@ -9,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FlashBack">
+
+        <!-- Tester Only - Delete FrontCardView and BoilerPlate Activities -->
+        <activity android:name=".EditCard.EditFlashCardActivity"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity android:name=".EditCard.EditFlashCardFrontActivity"
+            android:parentActivityName=".EditCard.EditFlashCardActivity">
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
