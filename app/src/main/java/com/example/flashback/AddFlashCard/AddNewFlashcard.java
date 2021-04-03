@@ -36,6 +36,7 @@ public class AddNewFlashcard extends AppCompatActivity {
         flashcardDS.insertFlashcardIntoDB(flashcard);
 
         Intent intent = new Intent();
+        // if there was a duplicate, new card doesn't exist
         if(flashcardDS.getSingleFlashcardById(flashcard.getId()) == null) {
             intent.putExtra("ID_NEW_CARD",-1L);
         }else{
