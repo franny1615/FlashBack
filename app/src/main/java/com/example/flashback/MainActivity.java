@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
     FlashcardsDataSource flashcardDS;
     List<FlashcardEntity> allcards = new ArrayList<>();
 
+    public static String EXTRA_FLASHCARD_ID = "com.example.flashback.MainActivity.FlashcardID";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
