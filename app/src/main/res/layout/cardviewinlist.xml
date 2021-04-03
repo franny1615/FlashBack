@@ -10,10 +10,7 @@
     app:flipOnTouch="true"
     app:flipType="horizontal">
 
-    <include layout="@layout/card_front" />
-
     <include layout="@layout/card_back" />
-
-
+    <include layout="@layout/card_front" />
 
 </com.wajahatkarim3.easyflipview.EasyFlipView>

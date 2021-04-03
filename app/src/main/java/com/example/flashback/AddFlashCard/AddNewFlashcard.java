@@ -1,5 +1,6 @@
 package com.example.flashback.AddFlashCard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -30,11 +31,17 @@ public class AddNewFlashcard extends AppCompatActivity {
         flashcard.setBackText(backCard.getText().toString());
 
         flashcardDS.insertFlashcardIntoDB(flashcard);
+
+        long lastKnownId = getIntent().getLongExtra("LAST_KNOWN_ID",0L);
+        Intent intent = new Intent();
+        intent.putExtra("ID_NEW_CARD",lastKnownId+1);
+        setResult(RESULT_OK, intent);
         finish();
     }
 
     public void cancelNewCard(View view)
     {
+        setResult(RESULT_CANCELED,null);
         finish();
     }
 }

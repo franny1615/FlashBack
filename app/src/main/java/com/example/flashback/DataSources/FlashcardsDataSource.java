@@ -90,8 +90,7 @@ public class FlashcardsDataSource {
         boolean isDuplicate = false;
         cards = flashcardDAO.loadAllFlashcardsFromDB().blockingFirst();
         for(FlashcardEntity existingFlashcard: cards) {
-            if(existingFlashcard.getFrontText().equals(flashcard.getFrontText()) &&
-               existingFlashcard.getBackText().equals(flashcard.getBackText())) {
+            if(existingFlashcard.getFrontText().equals(flashcard.getFrontText()) && existingFlashcard.getBackText().equals(flashcard.getBackText())) {
                 isDuplicate = true;
                 break;
             }
