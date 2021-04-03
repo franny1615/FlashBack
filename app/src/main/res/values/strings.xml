@@ -10,9 +10,9 @@
     <string name="cancel_button">Cancel</string>
     <string name="edit_screen_button">EDIT CARD</string>
     <string name="front_edit">Front Edit</string>
-    <string name="edit_screen">Edit Card</string>
     <string name="add_card">Add New Card</string>
     <string name="card_front_hint">Add Front Text</string>
     <string name="card_back_hint">Add Back Text</string>
     <string name="add_new_card">New Card</string>
+    <string name="edit_screen">Edit Card</string>
 </resources>
