@@ -24,6 +24,14 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerViewAdapter adapter;
 
     public static String EXTRA_FLASHCARD_ID = "com.example.flashback.MainActivity.FlashcardID";
+    public static String ID_OF_EDITED_CARD = "com.example.flashback.MainActivity.IdOfEditedCard";
+    public static String ID_NEW_CARD = "com.example.flashback.MainActivity.IdNewCard";
+    public static String LAST_KNOWN_ID = "com.example.flashback.MainActivity.LastKnownId";
+    public static String POSITION_IN_MEMORY = "com.example.flashback.MainActivity.PositionInMemory";
+    public static String EDITED_FLASHCARD_DETAILS = "editedFlashcardDetails";
+
+    public static long DEFAULT_ID = -1L;
+    public static int DEFAULT_POSITION = -1;
     private final static int ADD_REQUEST_CODE = 69;
 
     @Override
@@ -31,15 +39,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //
-        SharedPreferences shared = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
-        SharedPreferences.Editor shareEdit = shared.edit();
-        shareEdit.putLong("ID_OF_EDITED_CARD",-1L);
-        shareEdit.putInt("POSITION_IN_MEMORY",-1);
-        shareEdit.apply();
-        //
+        clearIdAndPositionInSharedPreferences();
         flashcardDS = new FlashcardsDataSource(this);
+        setUpAllFlashcardsAdapter();
+    }
+
+    private void clearIdAndPositionInSharedPreferences() {
+        SharedPreferences shared = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor shareEdit = shared.edit();
+        shareEdit.putLong(ID_OF_EDITED_CARD,DEFAULT_ID);
+        shareEdit.putInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
+        shareEdit.apply();
+    }
+
+    private void setUpAllFlashcardsAdapter() {
         List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
-        //
         adapter = new RecyclerViewAdapter(allcards,this);
         RecyclerView flashcardRecyclerView = findViewById(R.id.recyclerview);
         flashcardRecyclerView.setHasFixedSize(true);
@@ -54,9 +68,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        SharedPreferences editedCardStuff = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
-        int position = editedCardStuff.getInt("POSITION_IN_MEMORY",-1);
-        long idOfChangedCard = editedCardStuff.getLong("ID_OF_EDITED_CARD",-1L);
+        updateAndRefreshAllCardsAdapter();
+    }
+
+    private void updateAndRefreshAllCardsAdapter() {
+        SharedPreferences editedCardStuff = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
+        int position = editedCardStuff.getInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
+        long idOfChangedCard = editedCardStuff.getLong(ID_OF_EDITED_CARD,DEFAULT_ID);
 
         if((position != -1) && (idOfChangedCard != -1L)){
             FlashcardEntity card = adapter.mData.get(position);
@@ -66,11 +84,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.mData.set(position,card);
             adapter.notifyDataSetChanged();
             //
-            SharedPreferences shared = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
-            SharedPreferences.Editor shareEdit = shared.edit();
-            shareEdit.putLong("ID_OF_EDITED_CARD",-1L);
-            shareEdit.putInt("POSITION_IN_MEMORY",-1);
-            shareEdit.apply();
+            clearIdAndPositionInSharedPreferences();
         }
     }
 
@@ -81,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         if(size > 0) {
             lastKnownId = adapter.mData.get(size-1).getId();
         }
-        intent.putExtra("LAST_KNOWN_ID",lastKnownId);
+        intent.putExtra(LAST_KNOWN_ID,lastKnownId);
         startActivityForResult(intent, ADD_REQUEST_CODE);
     }
 
@@ -91,8 +105,8 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == ADD_REQUEST_CODE) {
                 if (data != null){
-                    long id = data.getLongExtra("ID_NEW_CARD",-1L);
-                    if(id != -1){
+                    long id = data.getLongExtra(ID_NEW_CARD,DEFAULT_ID);
+                    if(id != DEFAULT_ID){
                         FlashcardEntity newestCard = flashcardDS.getSingleFlashcardById(id);
                         adapter.mData.add(newestCard);
                         adapter.notifyDataSetChanged();

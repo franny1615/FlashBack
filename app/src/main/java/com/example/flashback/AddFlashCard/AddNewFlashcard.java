@@ -11,6 +11,10 @@ import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
 
+import static com.example.flashback.MainActivity.DEFAULT_ID;
+import static com.example.flashback.MainActivity.ID_NEW_CARD;
+import static com.example.flashback.MainActivity.LAST_KNOWN_ID;
+
 public class AddNewFlashcard extends AppCompatActivity {
 
     @Override
@@ -25,7 +29,7 @@ public class AddNewFlashcard extends AppCompatActivity {
         FlashcardEntity flashcard = new FlashcardEntity();
         FlashcardsDataSource flashcardDS = new FlashcardsDataSource(this);
 
-        long lastKnownId = getIntent().getLongExtra("LAST_KNOWN_ID",0L);
+        long lastKnownId = getIntent().getLongExtra(LAST_KNOWN_ID,0L);
 
         EditText frontCard = findViewById(R.id.new_card_front_screen);
         EditText backCard = findViewById(R.id.new_card_back_screen);
@@ -38,9 +42,9 @@ public class AddNewFlashcard extends AppCompatActivity {
         Intent intent = new Intent();
         // if there was a duplicate, new card doesn't exist
         if(flashcardDS.getSingleFlashcardById(flashcard.getId()) == null) {
-            intent.putExtra("ID_NEW_CARD",-1L);
+            intent.putExtra(ID_NEW_CARD,DEFAULT_ID);
         }else{
-            intent.putExtra("ID_NEW_CARD",lastKnownId+1);
+            intent.putExtra(ID_NEW_CARD,lastKnownId+1);
         }
         setResult(RESULT_OK, intent);
         finish();

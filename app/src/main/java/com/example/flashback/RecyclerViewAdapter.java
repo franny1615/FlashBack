@@ -16,6 +16,7 @@ import com.example.flashback.EditCard.EditFlashCard;
 import java.util.List;
 
 import static com.example.flashback.MainActivity.EXTRA_FLASHCARD_ID;
+import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.MyViewHolder> {
 
@@ -49,7 +50,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.edit.setOnClickListener(v -> {
             Intent intent = new Intent(this.context, EditFlashCard.class);
             intent.putExtra(EXTRA_FLASHCARD_ID, flashcard.getId());
-            intent.putExtra("POSITION_IN_MEMORY",position);
+            intent.putExtra(POSITION_IN_MEMORY,position);
             this.context.startActivity(intent);
         });
     }

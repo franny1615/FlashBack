@@ -14,7 +14,11 @@ import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
 
+import static com.example.flashback.MainActivity.DEFAULT_POSITION;
+import static com.example.flashback.MainActivity.EDITED_FLASHCARD_DETAILS;
 import static com.example.flashback.MainActivity.EXTRA_FLASHCARD_ID;
+import static com.example.flashback.MainActivity.ID_OF_EDITED_CARD;
+import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class EditFlashCard extends AppCompatActivity {
 
@@ -23,7 +27,6 @@ public class EditFlashCard extends AppCompatActivity {
     FlashcardsDataSource flashcardsDS = null;
     //
     private int position;
-    private final int DEFAULT_POSITION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class EditFlashCard extends AppCompatActivity {
         Log.d("Activity", "Retrieved Flashcard with ID: " + id);
         this.flashCard = this.flashcardsDS.getSingleFlashcardById(id);
         //
-        position = getIntent().getIntExtra("POSITION_IN_MEMORY",DEFAULT_POSITION);
+        position = getIntent().getIntExtra(POSITION_IN_MEMORY,DEFAULT_POSITION);
         //
         frontView.setText(this.flashCard.getFrontText());
         backView.setText(this.flashCard.getBackText());
@@ -55,10 +58,10 @@ public class EditFlashCard extends AppCompatActivity {
         this.flashCard.setBackText(backText);
         flashcardsDS.updateFlashcardInDB(flashCard);
 
-        SharedPreferences sharedPref = this.getSharedPreferences("editedFlashcardDetails",Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
         SharedPreferences.Editor prefEditor = sharedPref.edit();
-        prefEditor.putInt("POSITION_IN_MEMORY",position);
-        prefEditor.putLong("ID_OF_EDITED_CARD",flashCard.getId());
+        prefEditor.putInt(POSITION_IN_MEMORY,position);
+        prefEditor.putLong(ID_OF_EDITED_CARD,flashCard.getId());
         prefEditor.apply();
         finish();
     }
