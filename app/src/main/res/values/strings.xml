@@ -15,4 +15,8 @@
     <string name="card_back_hint">Add Back Text</string>
     <string name="add_new_card">New Card</string>
     <string name="edit_screen">Edit Card</string>
+    <string name="front_text_card_front">Front Text</string>
+    <string name="description_edit_on_card">edit button on a particular flashcard</string>
+    <string name="description_for_a_card">delete button for a particular card</string>
+    <string name="add_button_description">add button</string>
 </resources>

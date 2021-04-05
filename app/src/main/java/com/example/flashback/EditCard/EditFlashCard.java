@@ -1,6 +1,7 @@
 package com.example.flashback.EditCard;
 
-import android.content.Intent;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -13,13 +14,19 @@ import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
 
+import static com.example.flashback.MainActivity.DEFAULT_POSITION;
+import static com.example.flashback.MainActivity.EDITED_FLASHCARD_DETAILS;
 import static com.example.flashback.MainActivity.EXTRA_FLASHCARD_ID;
+import static com.example.flashback.MainActivity.ID_OF_EDITED_CARD;
+import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class EditFlashCard extends AppCompatActivity {
 
     public long DEFAULT_ID = 0;
     FlashcardEntity flashCard = null;
     FlashcardsDataSource flashcardsDS = null;
+    //
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +37,14 @@ public class EditFlashCard extends AppCompatActivity {
         TextView frontView = findViewById(R.id.front_screen_edit);
         TextView backView = findViewById(R.id.back_screen_edit);
 
-        Intent intent = getIntent();
         long id = getIntent().getLongExtra(EXTRA_FLASHCARD_ID,DEFAULT_ID);
         Log.d("Activity", "Retrieved Flashcard with ID: " + id);
         this.flashCard = this.flashcardsDS.getSingleFlashcardById(id);
-
-        frontView.setText(this.flashCard.getFrontText().toString());
-        backView.setText(this.flashCard.getBackText().toString());
+        //
+        position = getIntent().getIntExtra(POSITION_IN_MEMORY,DEFAULT_POSITION);
+        //
+        frontView.setText(this.flashCard.getFrontText());
+        backView.setText(this.flashCard.getBackText());
     }
 
     public void saveFlashCard(View view){
@@ -49,6 +57,12 @@ public class EditFlashCard extends AppCompatActivity {
         this.flashCard.setFrontText(frontText);
         this.flashCard.setBackText(backText);
         flashcardsDS.updateFlashcardInDB(flashCard);
+
+        SharedPreferences sharedPref = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefEditor = sharedPref.edit();
+        prefEditor.putInt(POSITION_IN_MEMORY,position);
+        prefEditor.putLong(ID_OF_EDITED_CARD,flashCard.getId());
+        prefEditor.apply();
         finish();
     }
 
