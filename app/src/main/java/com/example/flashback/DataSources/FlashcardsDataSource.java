@@ -56,7 +56,7 @@ public class FlashcardsDataSource {
         try {
             deleteThread.join();
         } catch (Exception e) {
-            Log.d("DELETE:"," error in deleteFlashcardInDB");
+            Log.d("DELETE CARD:"," error in deleteFlashcardInDB");
         }
     }
 
