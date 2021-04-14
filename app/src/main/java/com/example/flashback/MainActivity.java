@@ -16,6 +16,7 @@ import android.view.View;
 import com.example.flashback.AddFlashCard.AddNewFlashcard;
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
+import com.example.flashback.DeckClasses.AddDeck;
 import com.example.flashback.RecyclerViewAdapters.DeckRecyclerViewAdapter;
 import com.example.flashback.RecyclerViewAdapters.RecyclerViewAdapter;
 
@@ -36,9 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static long DEFAULT_ID = -1L;
     public static int DEFAULT_POSITION = -1;
     private final static int ADD_REQUEST_CODE = 69;
-
-    private RecyclerView flashcardRecyclerView;
-    private RecyclerView decksRecyclerView;
+    private final static int DECK_REQUEST_CODE = 420;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
     private void setUpAllFlashcardsAdapter() {
         List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
         adapter = new RecyclerViewAdapter(allcards,this);
-        flashcardRecyclerView = findViewById(R.id.recyclerview);
+        RecyclerView flashcardRecyclerView = findViewById(R.id.recyclerview);
         flashcardRecyclerView.setHasFixedSize(true);
         flashcardRecyclerView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
     private void setUpAllDecksAdapter(){
-        decksRecyclerView = findViewById(R.id.deck_recycler_view);
+        RecyclerView decksRecyclerView = findViewById(R.id.deck_recycler_view);
         List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
         // sample decks
         List<Long> myCards = new ArrayList<>();
@@ -137,6 +136,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void addDeck(View view){
+        Intent intent = new Intent(this, AddDeck.class);
+        startActivityForResult(intent, DECK_REQUEST_CODE);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
@@ -151,26 +155,10 @@ public class MainActivity extends AppCompatActivity {
             addAFlashcard(item.getActionView());
             return true;
         } else if (id == R.id.action_new_deck) {
-            // add deck function
+            addDeck(item.getActionView());
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void scrollUpRecyclerFlashcards(View view){
-        flashcardRecyclerView.smoothScrollBy(0,-100);
-    }
-
-    public void scrollDownRecyclerFlashcards(View view){
-        flashcardRecyclerView.smoothScrollBy(0,100);
-    }
-
-    public void scrollUpRecyclerDecks(View view){
-        decksRecyclerView.smoothScrollBy(0,-100);
-    }
-
-    public void scrollDownRecyclerDecks(View view){
-        decksRecyclerView.smoothScrollBy(0,100);
     }
 }

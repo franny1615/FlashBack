@@ -1,100 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="10"
+    android:weightSum="1"
     tools:context=".MainActivity">
 
-    <RelativeLayout
-        android:id="@+id/deck_title_actions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentTop="true">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/deckstitle"
-            android:textSize="30sp" />
-
-        <ImageButton
-            android:id="@+id/deck_up_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:contentDescription="@string/upbuttonrecyclerview"
-            android:onClick="scrollUpRecyclerDecks"
-            android:longClickable="true"
-            android:src="@android:drawable/arrow_up_float" />
-
-        <ImageButton
-            android:id="@+id/deck_down_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/deck_up_recyclerview"
-            android:layout_toLeftOf="@+id/deck_up_recyclerview"
-            android:contentDescription="@string/downbuttonrecyclerview"
-            android:onClick="scrollDownRecyclerDecks"
-            android:src="@android:drawable/arrow_down_float" />
-    </RelativeLayout>
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:fontFamily="monospace"
+        android:text="@string/deckstitle"
+        android:textSize="30sp"
+        android:layout_weight="0.08"
+        android:id="@+id/deck_title_actions"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@+id/deck_title_actions"
+        android:layout_weight="0.22"
         android:id="@+id/deck_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager" />
 
-    <RelativeLayout
+    <TextView
         android:id="@+id/flashcards_title_actions"
-        android:layout_below="@+id/deck_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="@string/flashcardstitle"
-            android:textSize="30sp" />
-
-        <ImageButton
-            android:id="@+id/flashcard_up_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:contentDescription="@string/upbuttonrecyclerview"
-            android:onClick="scrollUpRecyclerFlashcards"
-            android:longClickable="true"
-            android:src="@android:drawable/arrow_up_float" />
-
-        <ImageButton
-            android:id="@+id/flashcard_down_recyclerview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/flashcard_up_recyclerview"
-            android:layout_toLeftOf="@+id/flashcard_up_recyclerview"
-            android:contentDescription="@string/downbuttonrecyclerview"
-            android:onClick="scrollDownRecyclerFlashcards"
-            android:longClickable="true"
-            android:src="@android:drawable/arrow_down_float" />
-    </RelativeLayout>
+        android:layout_weight="0.08"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:fontFamily="monospace"
+        android:text="@string/flashcardstitle"
+        android:textSize="30sp" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_weight="0.62"
         android:id="@+id/recyclerview"
-        android:layout_below="@+id/flashcards_title_actions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:scrollbars="vertical"
         app:layoutManager="LinearLayoutManager" />
 
-</RelativeLayout>
+</LinearLayout>

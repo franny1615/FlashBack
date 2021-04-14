@@ -23,6 +23,9 @@
     <string name="downbuttonrecyclerview">downbuttonrecyclerview</string>
     <string name="flashcardstitle">Flashcards</string>
     <string name="deckstitle">Decks</string>
-    <string name="sample_deck_name">sample deck name</string>
+    <string name="sample_deck_name">Subject101</string>
     <string name="deck_item_img_desc">deck item folder icon</string>
+    <string name="create_a_deck">Create a Deck</string>
+    <string name="deck_name">Deck Name:</string>
+    <string name="select_cards">Select Cards</string>
 </resources>
