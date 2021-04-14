@@ -19,4 +19,10 @@
     <string name="description_edit_on_card">edit button on a particular flashcard</string>
     <string name="description_for_a_card">delete button for a particular card</string>
     <string name="add_button_description">add button</string>
+    <string name="upbuttonrecyclerview">upbuttonrecyclerview</string>
+    <string name="downbuttonrecyclerview">downbuttonrecyclerview</string>
+    <string name="flashcardstitle">Flashcards</string>
+    <string name="deckstitle">Decks</string>
+    <string name="sample_deck_name">sample deck name</string>
+    <string name="deck_item_img_desc">deck item folder icon</string>
 </resources>

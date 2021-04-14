@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_add_card"
+        android:icon="@drawable/ic_add_card"
+        android:title="@string/add_card"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_new_deck"
+        android:icon="@drawable/ic_add_folder"
+        android:title="@string/add_new_card"
+        app:showAsAction="ifRoom" />
+</menu>
