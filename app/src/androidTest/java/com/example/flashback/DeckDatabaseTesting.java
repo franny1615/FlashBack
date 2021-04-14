@@ -6,7 +6,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.flashback.DataSources.DeckDataSource;
+import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.DeckEntity;
+import com.example.flashback.DatabaseTables.FlashcardEntity;
+
 import static org.junit.Assert.*;
 
 import org.junit.Before;
@@ -19,11 +22,16 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class DeckDatabaseTesting {
     private DeckDataSource deckDS;
+    private FlashcardsDataSource flashcardDS;
 
     @Before public void getAppContext()
     {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
         deckDS = new DeckDataSource(context);
+        flashcardDS = new FlashcardsDataSource(context);
+
+        flashcardDS.deleteAllFlashcards();
         deckDS.deleteAllDecks();
     }
 
@@ -112,29 +120,68 @@ public class DeckDatabaseTesting {
     @Test
     public void updateDeckInDB()
     {
+        String deckName1 = "My Deck";
+        String deckName2 = "My Updated Deck";
+
         int cardCount = 0;
         DeckEntity deck = new DeckEntity();
-        String deckName = "My Deck";
-        deck.setDeckName(deckName);
-        List<Long> cards = new ArrayList<>();
+        deck.setDeckName(deckName1);
 
+        List<Long> cards = new ArrayList<>();
         cards.add(1L);
         cardCount++;
         cards.add(2L);
         cardCount++;
         cards.add(3L);
         cardCount++;
-
         deck.setCardIDs(cards);
+
         deckDS.insertDeckIntoDB(deck);
+        List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
+        deck = decks.get(0);
+
         deck.addCardToDeck(4L);
         cardCount++;
+        deck.setDeckName(deckName2);
         deckDS.updateDeckInDB(deck);
 
-        List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
         DeckEntity updatedDeckFromDB = decks.get(0);
-
         assertEquals(cardCount,updatedDeckFromDB.getSize());
+        assertEquals(deckName2, updatedDeckFromDB.getDeckName());
     }
 
+    @Test
+    public void getSingleDeckByID()
+    {
+        String deckName = "New Deck";
+        List<Long> cards = new ArrayList<>();
+        cards.add(1L);
+        DeckEntity deck = new DeckEntity(deckName,cards);
+
+
+        deckDS.insertDeckIntoDB(deck);
+        List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
+        Long deckIDToRetrieve = decks.get(0).getId();
+
+        DeckEntity deckRetrieved = deckDS.getSingleDeckByID(deckIDToRetrieve);
+
+        assertEquals(deck.getDeckName(), deckRetrieved.getDeckName());
+        assertEquals(deck.toString(), deckRetrieved.toString());
+    }
+
+    @Test
+    public void validateFlashcardInDeckValue()
+    {
+        FlashcardEntity flashcard = new FlashcardEntity();
+        List<FlashcardEntity> flashcards;
+        flashcard.setBackText("Back text");
+        flashcard.setFrontText("Front text");
+        flashcardDS.insertFlashcardIntoDB(flashcard);
+        flashcards = flashcardDS.loadAllFlashcardsFromDB();
+
+        List<Long> cards = new ArrayList<>();
+        cards.add(flashcards.get(0).getId());
+        DeckEntity deck = new DeckEntity("My Deck", cards);
+
+    }
 }

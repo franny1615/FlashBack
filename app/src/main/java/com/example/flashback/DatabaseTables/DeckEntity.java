@@ -25,13 +25,19 @@ public class DeckEntity {
     private List<Long> cardIDs;
 
     private String deckName;
-
     private int size;
 
     public DeckEntity()
     {
         this.cardIDs = new ArrayList<>();
         this.size = 0;
+    }
+
+    public DeckEntity(String name, List<Long> cardIDs){
+        this.size = 0;
+        this.cardIDs = new ArrayList<>();
+        setDeckName(name);
+        setCardIDs(cardIDs);
     }
 
     public void setDeckName(String name) { this.deckName = name; }
@@ -72,12 +78,11 @@ public class DeckEntity {
 
     public void setCardIDs(List<Long> cardIDs)
     {
+
         if (cardIDs != null){
-            this.cardIDs = cardIDs;
+            this.cardIDs.addAll(cardIDs);
             size += cardIDs.size();
         }
-        else
-            this.cardIDs = new ArrayList<>();
     }
 
     public List<Long> getCardIDs()

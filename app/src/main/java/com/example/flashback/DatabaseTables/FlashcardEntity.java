@@ -13,7 +13,7 @@ public class FlashcardEntity {
     // populate from user info
     private String frontText;
     private String backText;
-
+    private boolean inDeck;
     // id methods
     public long getId() {
         return id;
@@ -40,4 +40,8 @@ public class FlashcardEntity {
     public void setBackText(String backText) {
         this.backText = backText;
     }
+
+    public void setInDeck(boolean inDeck){this.inDeck = inDeck;}
+
+    public boolean getInDeck(){return this.inDeck;}
 }
