@@ -13,7 +13,14 @@ public class FlashcardEntity {
     // populate from user info
     private String frontText;
     private String backText;
+    private boolean inDeck;
+    private Long associatedDeck;
 
+    public FlashcardEntity()
+    {
+        setInDeck(false);
+        this.associatedDeck = -1L;
+    }
     // id methods
     public long getId() {
         return id;
@@ -39,5 +46,17 @@ public class FlashcardEntity {
 
     public void setBackText(String backText) {
         this.backText = backText;
+    }
+
+    public void setInDeck(boolean inDeck){this.inDeck = inDeck;}
+
+    public boolean getInDeck(){return this.inDeck;}
+
+    public Long getAssociatedDeck(){return this.associatedDeck;}
+
+    public void setAssociatedDeck(Long deckID)
+    {
+        if(deckID >= 0)
+            this.associatedDeck = deckID;
     }
 }
