@@ -169,19 +169,4 @@ public class DeckDatabaseTesting {
         assertEquals(deck.toString(), deckRetrieved.toString());
     }
 
-    @Test
-    public void validateFlashcardInDeckValue()
-    {
-        FlashcardEntity flashcard = new FlashcardEntity();
-        List<FlashcardEntity> flashcards;
-        flashcard.setBackText("Back text");
-        flashcard.setFrontText("Front text");
-        flashcardDS.insertFlashcardIntoDB(flashcard);
-        flashcards = flashcardDS.loadAllFlashcardsFromDB();
-
-        List<Long> cards = new ArrayList<>();
-        cards.add(flashcards.get(0).getId());
-        DeckEntity deck = new DeckEntity("My Deck", cards);
-
-    }
 }

@@ -107,4 +107,5 @@ public class DeckEntity {
     {
         return this.size;
     }
+
 }
