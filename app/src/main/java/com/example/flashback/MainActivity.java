@@ -17,18 +17,20 @@ import com.example.flashback.AddFlashCard.AddNewFlashcard;
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.DeckClasses.AddDeck;
+import com.example.flashback.DeckClasses.DeckScreen;
 import com.example.flashback.RecyclerViewAdapters.DeckRecyclerViewAdapter;
 import com.example.flashback.RecyclerViewAdapters.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DeckRecyclerViewAdapter.DeckClickListener {
     private FlashcardsDataSource flashcardDS;
     private RecyclerViewAdapter adapter;
 
     public static String EXTRA_FLASHCARD_ID = "com.example.flashback.MainActivity.FlashcardID";
     public static String ID_OF_EDITED_CARD = "com.example.flashback.MainActivity.IdOfEditedCard";
+    public static String ID_OF_DECK = "com.example.flashback.MainActivity.IdOfDeck";
     public static String ID_NEW_CARD = "com.example.flashback.MainActivity.IdNewCard";
     public static String LAST_KNOWN_ID = "com.example.flashback.MainActivity.LastKnownId";
     public static String POSITION_IN_MEMORY = "com.example.flashback.MainActivity.PositionInMemory";
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             myCards.add(allcards.get(i).getId());
         }
         for(int i = 0; i < 5; i++){
-            decks.add(new DeckEntity("Deck: "+i,myCards));
+            decks.add(new DeckEntity("Deck: "+i,myCards,i));
         }
         // adapter
         DeckRecyclerViewAdapter adapter = new DeckRecyclerViewAdapter(decks,this);
@@ -119,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, ADD_REQUEST_CODE);
     }
 
+    public void addDeck(View view){
+        Intent intent = new Intent(this, AddDeck.class);
+        startActivityForResult(intent, DECK_REQUEST_CODE);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -136,29 +143,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void addDeck(View view){
-        Intent intent = new Intent(this, AddDeck.class);
-        startActivityForResult(intent, DECK_REQUEST_CODE);
-    }
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_add_card) {
-            addAFlashcard(item.getActionView());
-            return true;
-        } else if (id == R.id.action_new_deck) {
-            addDeck(item.getActionView());
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public void sendToDeckScreen(long id) {
+        Intent intent = new Intent(this, DeckScreen.class);
+        intent.putExtra(ID_OF_DECK,id);
+        startActivity(intent);
     }
 }

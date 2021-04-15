@@ -1,37 +1,29 @@
 package com.example.flashback.RecyclerViewAdapters;
-
-import android.content.Context;
-import android.content.Intent;
-import android.provider.MediaStore;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
-import com.example.flashback.DeckEntity;
-import com.example.flashback.EditCard.EditFlashCard;
 import com.example.flashback.R;
 
 import java.util.List;
 
-import static com.example.flashback.MainActivity.EXTRA_FLASHCARD_ID;
-import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
-
 public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectCardsRecyclerViewAdapter.MyViewHolder> {
 
+    final private SelectCardClickListener cardSelectListener;
     public List<FlashcardEntity> mData;
-    private final Context context;
 
-    public SelectCardsRecyclerViewAdapter (List<FlashcardEntity> mData, Context context) {
+    public SelectCardsRecyclerViewAdapter (List<FlashcardEntity> mData, SelectCardClickListener cardSelectListener) {
         this.mData = mData;
-        this.context = context;
+        this.cardSelectListener = cardSelectListener;
     }
 
     @Override
@@ -45,6 +37,8 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
     public void onBindViewHolder(MyViewHolder holder, int position) {
         FlashcardEntity deck = mData.get(position);
         holder.front.setText(deck.getFrontText());
+        holder.id = deck.getId();
+        holder.selected = false;
     }
 
     @Override
@@ -52,13 +46,40 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
         return mData.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView front;
-        private final RadioButton selected;
+        private final CardView mycard;
+        private long id;
+        private boolean selected;
         public MyViewHolder(View itemView) {
             super(itemView);
             front = itemView.findViewById(R.id.select_item_front_text);
-            selected = itemView.findViewById(R.id.select_item_radio_button);
+            mycard = itemView.findViewById(R.id.selected_card_cardview);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if(!selected) {
+                changeBackgroundColor(Color.WHITE,Color.DKGRAY);
+                cardSelectListener.onSelectedCardClick(id);
+            } else {
+                changeBackgroundColor(Color.DKGRAY,Color.WHITE);
+                cardSelectListener.onDeselectCardClick(id);
+            }
+            selected = !selected;
+        }
+
+        public void changeBackgroundColor(int colorFrom, int colorTo){
+            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+            colorAnimation.setDuration(400); // milliseconds
+            colorAnimation.addUpdateListener(animator -> mycard.setBackgroundColor((int) animator.getAnimatedValue()));
+            colorAnimation.start();
+        }
+    }
+
+    public interface SelectCardClickListener {
+        void onSelectedCardClick(long id);
+        void onDeselectCardClick(long id);
     }
 }

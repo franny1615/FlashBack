@@ -9,34 +9,39 @@
     android:weightSum="1">
 
     <TextView
-        android:layout_weight="0.1"
         android:layout_width="match_parent"
-        android:textAlignment="center"
-        android:gravity="center_horizontal"
         android:layout_height="0dp"
         android:layout_margin="30dp"
+        android:layout_weight="0.1"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
         android:text="@string/create_a_deck"
+        android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="18sp" />
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <RelativeLayout
         android:layout_weight="0.15"
         android:layout_margin="15dp"
         android:layout_width="match_parent"
         android:layout_height="0dp">
+
         <TextView
             android:id="@+id/deck_createscreen_deck_name_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/deck_name"
             android:textColor="#050505"
             android:textSize="18sp" />
         <EditText
             android:layout_centerVertical="true"
             android:id="@+id/deck_createscreen_deckname_edittext"
+            android:onClick="saveDeckAdd"
             android:hint="@string/sample_deck_name"
             android:layout_toEndOf="@+id/deck_createscreen_deck_name_label"
             android:layout_toRightOf="@+id/deck_createscreen_deck_name_label"
@@ -51,14 +56,16 @@
         android:layout_margin="15dp"
         android:layout_width="wrap_content"
         android:layout_height="0dp">
+
         <TextView
             android:id="@+id/deck_createscreen_cards_label"
-            android:layout_alignParentTop="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="sans-serif-medium"
             android:text="@string/select_cards"
             android:textColor="#050505"
-            android:textSize="18sp"/>
+            android:textSize="18sp" />
         <androidx.recyclerview.widget.RecyclerView
             app:layoutManager="LinearLayoutManager"
             android:id="@+id/deck_createscreen_recyclerview"

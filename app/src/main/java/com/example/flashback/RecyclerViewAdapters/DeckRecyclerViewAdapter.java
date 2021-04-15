@@ -7,10 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
+import com.example.flashback.DeckClasses.AddDeck;
 import com.example.flashback.DeckEntity;
 import com.example.flashback.EditCard.EditFlashCard;
 import com.example.flashback.R;
@@ -22,15 +25,16 @@ import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerViewAdapter.MyViewHolder> {
 
+    final private DeckClickListener deckClicked;
     public List<DeckEntity> mData;
-    private final Context context;
 
-    public DeckRecyclerViewAdapter (List<DeckEntity> mData, Context context) {
+    public DeckRecyclerViewAdapter (List<DeckEntity> mData, DeckClickListener deckClicked) {
         this.mData = mData;
-        this.context = context;
+        this.deckClicked = deckClicked;
     }
 
     @Override
+    @NonNull
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.deck_item, parent, false);
         return new MyViewHolder(listItem);
@@ -47,11 +51,21 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
         return mData.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView deckName;
         public MyViewHolder(View itemView) {
             super(itemView);
             deckName = itemView.findViewById(R.id.deck_item_name);
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            deckClicked.sendToDeckScreen(mData.get(getAdapterPosition()).getDeckId());
+        }
+    }
+
+    public interface DeckClickListener {
+        void sendToDeckScreen(long id);
     }
 }
