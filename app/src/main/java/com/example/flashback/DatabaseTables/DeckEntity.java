@@ -92,11 +92,6 @@ public class DeckEntity {
         return returnedCardIDs;
     }
 
-    public String toString()
-    {
-        return this.cardIDs.toString();
-    }
-
     public void setSize(int size)
     {
         if(size > -1)

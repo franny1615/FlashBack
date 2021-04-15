@@ -124,8 +124,7 @@ public class DeckDatabaseTesting {
         String deckName2 = "My Updated Deck";
 
         int cardCount = 0;
-        DeckEntity deck = new DeckEntity();
-        deck.setDeckName(deckName1);
+
 
         List<Long> cards = new ArrayList<>();
         cards.add(1L);
@@ -134,7 +133,7 @@ public class DeckDatabaseTesting {
         cardCount++;
         cards.add(3L);
         cardCount++;
-        deck.setCardIDs(cards);
+        DeckEntity deck = new DeckEntity(deckName1, cards);
 
         deckDS.insertDeckIntoDB(deck);
         List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
