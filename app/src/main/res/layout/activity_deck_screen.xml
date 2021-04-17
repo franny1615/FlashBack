@@ -35,7 +35,8 @@
             android:layout_height="wrap_content"
             app:fabSize="mini"
             app:srcCompat="@android:drawable/ic_menu_edit"
-            android:contentDescription="@string/sample_deck_name" />
+            android:contentDescription="@string/sample_deck_name"
+            android:onClick="editDeckName"/>
     </LinearLayout>
 
     <LinearLayout
@@ -50,7 +51,8 @@
             android:layout_height="wrap_content"
             app:fabSize="mini"
             app:srcCompat="@android:drawable/ic_input_add"
-            android:contentDescription="@string/sample_deck_name" />
+            android:contentDescription="@string/sample_deck_name"
+            android:onClick="onAddCardToDeck"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/deckScreenDeleteCardsButton"
             android:layout_width="wrap_content"
@@ -70,5 +72,6 @@
         android:id="@+id/deck_screen_recyclerview"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </LinearLayout>

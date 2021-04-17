@@ -28,4 +28,5 @@
     <string name="create_a_deck">Create a Deck</string>
     <string name="deck_name">Deck Name:</string>
     <string name="select_cards">Select Cards</string>
+    <string name="edit_deck_name"><u>New Deck Name</u></string>
 </resources>

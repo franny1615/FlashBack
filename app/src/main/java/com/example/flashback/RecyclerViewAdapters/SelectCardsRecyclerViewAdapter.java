@@ -35,9 +35,9 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        FlashcardEntity deck = mData.get(position);
-        holder.front.setText(deck.getFrontText());
-        holder.id = deck.getId();
+        FlashcardEntity card = mData.get(position);
+        holder.front.setText(card.getFrontText());
+        holder.me = card;
         holder.selected = false;
     }
 
@@ -49,7 +49,7 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView front;
         private final CardView mycard;
-        private long id;
+        private FlashcardEntity me;
         private boolean selected;
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -62,10 +62,10 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
         public void onClick(View v) {
             if(!selected) {
                 changeBackgroundColor(Color.WHITE,Color.DKGRAY);
-                cardSelectListener.onSelectedCardClick(id);
+                cardSelectListener.onSelectedCardClick(me);
             } else {
                 changeBackgroundColor(Color.DKGRAY,Color.WHITE);
-                cardSelectListener.onDeselectCardClick(id);
+                cardSelectListener.onDeselectCardClick(me);
             }
             selected = !selected;
         }
@@ -79,7 +79,7 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
     }
 
     public interface SelectCardClickListener {
-        void onSelectedCardClick(long id);
-        void onDeselectCardClick(long id);
+        void onSelectedCardClick(FlashcardEntity card);
+        void onDeselectCardClick(FlashcardEntity card);
     }
 }

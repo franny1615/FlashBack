@@ -1,27 +1,18 @@
 package com.example.flashback.RecyclerViewAdapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.flashback.DataSources.FlashcardsDataSource;
-import com.example.flashback.DatabaseTables.FlashcardEntity;
-import com.example.flashback.DeckClasses.AddDeck;
-import com.example.flashback.DeckEntity;
-import com.example.flashback.EditCard.EditFlashCard;
+import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.R;
 
 import java.util.List;
 
-import static com.example.flashback.MainActivity.EXTRA_FLASHCARD_ID;
-import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerViewAdapter.MyViewHolder> {
 
@@ -61,7 +52,7 @@ public class DeckRecyclerViewAdapter extends RecyclerView.Adapter<DeckRecyclerVi
 
         @Override
         public void onClick(View v) {
-            deckClicked.sendToDeckScreen(mData.get(getAdapterPosition()).getDeckId());
+            deckClicked.sendToDeckScreen(mData.get(getAdapterPosition()).getId());
         }
     }
 

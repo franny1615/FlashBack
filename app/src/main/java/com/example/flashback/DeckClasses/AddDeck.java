@@ -1,14 +1,18 @@
 package com.example.flashback.DeckClasses;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.example.flashback.DataSources.DeckDataSource;
 import com.example.flashback.DataSources.FlashcardsDataSource;
+import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
 import com.example.flashback.RecyclerViewAdapters.SelectCardsRecyclerViewAdapter;
@@ -16,24 +20,33 @@ import com.example.flashback.RecyclerViewAdapters.SelectCardsRecyclerViewAdapter
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddDeck extends AppCompatActivity implements SelectCardsRecyclerViewAdapter.SelectCardClickListener {
+import static com.example.flashback.MainActivity.CURRENT_RUNNING_DECK_ID;
+import static com.example.flashback.MainActivity.DEFAULT_ID;
+import static com.example.flashback.MainActivity.ID_OF_DECK;
+
+public class AddDeck extends AppCompatActivity implements
+        SelectCardsRecyclerViewAdapter.SelectCardClickListener,
+        DeckConfirmEmptyListDialog.ConfirmEmptyDialogListener {
 
     private List<Long> selectedIds;
     private RecyclerView selectRV;
+    private FlashcardsDataSource flashDS;
+    private List<FlashcardEntity> allcards;
+    private long newId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_deck);
         selectedIds = new ArrayList<>();
-
-        FlashcardsDataSource ds = new FlashcardsDataSource(this);
-        List<FlashcardEntity> cards = ds.loadAllFlashcardsFromDB();
-        // TODO remove cards that are in a deck already by checking their inDeck status
-        SelectCardsRecyclerViewAdapter adapter = new SelectCardsRecyclerViewAdapter(cards, this);
+        //
+        flashDS = new FlashcardsDataSource(this);
+        SelectCardsRecyclerViewAdapter adapter = new SelectCardsRecyclerViewAdapter(createNotInDeckList(), this);
         selectRV = findViewById(R.id.deck_createscreen_recyclerview);
         selectRV.setHasFixedSize(true);
         selectRV.setAdapter(adapter);
+        //
+        newId = getIntent().getLongExtra(CURRENT_RUNNING_DECK_ID,0L);
     }
 
     public void cancelDeckAdd(View view) {
@@ -41,25 +54,89 @@ public class AddDeck extends AppCompatActivity implements SelectCardsRecyclerVie
     }
 
     public void saveDeckAdd(View view) {
-        Intent intent = new Intent();
         EditText deckName = findViewById(R.id.deck_createscreen_deckname_edittext);
-        // TODO: use travis insert method to add new deck in
-        // TODO: if selectedIds is empty show a confirmation dialog for empty deck.
-        setResult(RESULT_OK, intent);
-        finish();
+        if(deckName.getText().toString().equals("")){
+            Toast.makeText(this,"Plase add a Name",Toast.LENGTH_LONG).show();
+        } else {
+            if(selectedIds.isEmpty()) {
+                DeckConfirmEmptyListDialog dialog = new DeckConfirmEmptyListDialog();
+                dialog.show(getSupportFragmentManager(), "Confirm");
+            }
+
+            DeckEntity newDeck = new DeckEntity(deckName.getText().toString(),selectedIds);
+            DeckDataSource deckDS = new DeckDataSource(this);
+            newDeck.setId(newId+1);
+            deckDS.insertDeckIntoDB(newDeck);
+            //
+            Intent intent = new Intent();
+            if(deckDS.getSingleDeckByID(newDeck.getId()) == null) {
+                updateCardsAffected();
+                intent.putExtra(ID_OF_DECK,DEFAULT_ID);
+            } else {
+                intent.putExtra(ID_OF_DECK,newId+1);
+            }
+            setResult(RESULT_OK, intent);
+            finish();
+        }
     }
 
     @Override
-    public void onSelectedCardClick(long id){
-        selectedIds.add(id);
+    public void onSelectedCardClick(FlashcardEntity card){
+        card.setInDeck(true);
+        selectedIds.add(card.getId());
+        card.setAssociatedDeck(newId+1);
+        updateCardInDB(card);
     }
 
     @Override
-    public void onDeselectCardClick(long id){
+    public void onDeselectCardClick(FlashcardEntity card){
         for(int i = 0; i < selectedIds.size(); i++){
-            if(id == selectedIds.get(i)){
+            if(card.getId() == selectedIds.get(i)){
                 selectedIds.remove(i);
+                card.setInDeck(false);
+                card.setAssociatedDeck(-1L);
                 break;
+            }
+        }
+        updateCardInDB(card);
+    }
+
+    public void updateCardInDB(FlashcardEntity card) {
+        FlashcardsDataSource ds = new FlashcardsDataSource(this);
+        ds.updateFlashcardInDB(card);
+    }
+
+    private List<FlashcardEntity> createNotInDeckList(){
+        allcards = flashDS.loadAllFlashcardsFromDB();
+        List<FlashcardEntity> toDisplay = new ArrayList<>();
+        for(int i = 0; i < allcards.size(); i++){
+            if(!allcards.get(i).getInDeck()) {
+                toDisplay.add(allcards.get(i));
+            }
+        }
+        return toDisplay;
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment fragment) {
+        fragment.dismiss();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment fragment) {
+        fragment.dismiss();
+    }
+
+    public void updateCardsAffected(){
+        for(int i = 0; i < selectedIds.size(); i++){
+            for(int j = 0; j < allcards.size(); j++){
+                FlashcardEntity card = allcards.get(i);
+                if(selectedIds.get(i) == card.getId()){
+                    card.setInDeck(false);
+                    card.setAssociatedDeck(-1L);
+                    flashDS.updateFlashcardInDB(card);
+                    break;
+                }
             }
         }
     }

@@ -14,7 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.flashback.AddFlashCard.AddNewFlashcard;
+import com.example.flashback.DataSources.DeckDataSource;
 import com.example.flashback.DataSources.FlashcardsDataSource;
+import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.DeckClasses.AddDeck;
 import com.example.flashback.DeckClasses.DeckScreen;
@@ -26,7 +28,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DeckRecyclerViewAdapter.DeckClickListener {
     private FlashcardsDataSource flashcardDS;
+    private DeckDataSource decksDS;
     private RecyclerViewAdapter adapter;
+    private DeckRecyclerViewAdapter deckAdapter;
 
     public static String EXTRA_FLASHCARD_ID = "com.example.flashback.MainActivity.FlashcardID";
     public static String ID_OF_EDITED_CARD = "com.example.flashback.MainActivity.IdOfEditedCard";
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
     public static String LAST_KNOWN_ID = "com.example.flashback.MainActivity.LastKnownId";
     public static String POSITION_IN_MEMORY = "com.example.flashback.MainActivity.PositionInMemory";
     public static String EDITED_FLASHCARD_DETAILS = "editedFlashcardDetails";
+    public static String CURRENT_RUNNING_DECK_ID = "com.example.flashback.MainActivity.CurrentRunningDeckId";
 
     public static long DEFAULT_ID = -1L;
     public static int DEFAULT_POSITION = -1;
@@ -48,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         //
         clearIdAndPositionInSharedPreferences();
         flashcardDS = new FlashcardsDataSource(this);
+        decksDS = new DeckDataSource(this);
+        //
         setUpAllFlashcardsAdapter();
         setUpAllDecksAdapter();
     }
@@ -62,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
 
     private void setUpAllFlashcardsAdapter() {
         List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
-        adapter = new RecyclerViewAdapter(allcards,this);
+        adapter = new RecyclerViewAdapter(createNotInDeckList(allcards),this);
         RecyclerView flashcardRecyclerView = findViewById(R.id.recyclerview);
         flashcardRecyclerView.setHasFixedSize(true);
         flashcardRecyclerView.setAdapter(adapter);
@@ -71,20 +78,11 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
 
     private void setUpAllDecksAdapter(){
         RecyclerView decksRecyclerView = findViewById(R.id.deck_recycler_view);
-        List<FlashcardEntity> allcards = flashcardDS.loadAllFlashcardsFromDB();
-        // sample decks
-        List<Long> myCards = new ArrayList<>();
-        List<DeckEntity> decks = new ArrayList<>();
-        for(int i = 0; i < 5; i++) {
-            myCards.add(allcards.get(i).getId());
-        }
-        for(int i = 0; i < 5; i++){
-            decks.add(new DeckEntity("Deck: "+i,myCards,i));
-        }
+        List<DeckEntity> decks = decksDS.loadAllDecksFromDB();
         // adapter
-        DeckRecyclerViewAdapter adapter = new DeckRecyclerViewAdapter(decks,this);
+        deckAdapter = new DeckRecyclerViewAdapter(decks,this);
         decksRecyclerView.setHasFixedSize(true);
-        decksRecyclerView.setAdapter(adapter);
+        decksRecyclerView.setAdapter(deckAdapter);
     }
 
     @Override
@@ -123,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
 
     public void addDeck(View view){
         Intent intent = new Intent(this, AddDeck.class);
+        long id = 0L;
+        if(!deckAdapter.mData.isEmpty()) {
+            id = deckAdapter.mData.get(deckAdapter.mData.size()-1).getId();
+        }
+        intent.putExtra(CURRENT_RUNNING_DECK_ID, id);
         startActivityForResult(intent, DECK_REQUEST_CODE);
     }
 
@@ -140,6 +143,19 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
                     }
                 }
             }
+            if(requestCode == DECK_REQUEST_CODE) {
+                if (data != null){
+                    long id = data.getLongExtra(ID_OF_DECK, DEFAULT_ID);
+                    if(id != DEFAULT_ID){
+                        DeckEntity newestDeck = decksDS.getSingleDeckByID(id);
+                        deckAdapter.mData.add(newestDeck);
+                        deckAdapter.notifyDataSetChanged();
+                        //
+                        updateAdapterList(newestDeck.getCardIDs());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
         }
     }
 
@@ -148,5 +164,26 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         Intent intent = new Intent(this, DeckScreen.class);
         intent.putExtra(ID_OF_DECK,id);
         startActivity(intent);
+    }
+
+    private List<FlashcardEntity> createNotInDeckList(List<FlashcardEntity> allcards){
+        List<FlashcardEntity> toDisplay = new ArrayList<>();
+        for(int i = 0; i < allcards.size(); i++){
+            if(!allcards.get(i).getInDeck()) {
+                toDisplay.add(allcards.get(i));
+            }
+        }
+        return toDisplay;
+    }
+
+    public void updateAdapterList(List<Long> ids){
+        for(int i = 0; i < ids.size(); i++){
+            for(int j = 0; j < adapter.mData.size(); j++) {
+                if(ids.get(i) == adapter.mData.get(j).getId()){
+                    adapter.mData.remove(j);
+                    break;
+                }
+            }
+        }
     }
 }

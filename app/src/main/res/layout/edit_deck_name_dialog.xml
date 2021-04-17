@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/deckEditTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="@string/edit_deck_name"
+        android:textAlignment="center"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal" />
+
+    <EditText
+        android:labelFor="@+id/deckEditTitle"
+        android:id="@+id/deck_dialog_editDeckName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:importantForAutofill="no"
+        android:hint="@string/sample_deck_name"
+        android:inputType="text" />
+
+</LinearLayout>

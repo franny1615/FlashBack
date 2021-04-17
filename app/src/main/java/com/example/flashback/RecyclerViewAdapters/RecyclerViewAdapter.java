@@ -8,9 +8,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.flashback.DataSources.DeckDataSource;
 import com.example.flashback.DataSources.FlashcardsDataSource;
+import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.EditCard.EditFlashCard;
 import com.example.flashback.R;
@@ -32,6 +36,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
+    @NonNull
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardviewinlist, parent, false);
         return new MyViewHolder(listItem);
@@ -41,11 +46,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(MyViewHolder holder, int position) {
         FlashcardEntity flashcard = mData.get(position);
         FlashcardsDataSource ds = new FlashcardsDataSource(this.context);
+        DeckDataSource deckDS = new DeckDataSource(this.context);
         holder.back.setText(flashcard.getBackText());
         holder.front.setText(flashcard.getFrontText());
         //
         holder.delete.setOnClickListener(v -> {
+            // TODO doesn't work in decks null object reference
             FlashcardEntity cardToDelete = mData.remove(position);
+            if(cardToDelete.getInDeck()){
+                DeckEntity deck = deckDS.getSingleDeckByID(cardToDelete.getAssociatedDeck());
+                deck.removeCardFromDeck(cardToDelete.getId());
+                deckDS.updateDeckInDB(deck);
+            }
             ds.deleteFlashcardInDB(cardToDelete);
             this.notifyDataSetChanged();
         });
