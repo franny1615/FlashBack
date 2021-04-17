@@ -1,4 +1,4 @@
-package com.example.flashback.DeckClasses;
+package com.example.flashback.DeckClasses.DeckDialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -29,7 +30,7 @@ public class EditDeckNameDialog extends DialogFragment {
         View mView = inflater.inflate(R.layout.edit_deck_name_dialog,null);
         EditText name = mView.findViewById(R.id.deck_dialog_editDeckName);
         builder.setView(mView)
-                .setPositiveButton("Done", (dialog, id) -> listener.onDoneEditing(name.getText().toString()))
+                .setPositiveButton("Done", (dialog, id) -> checkEmptiness(mView.getContext(),name.getText().toString()))
                 .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
         return builder.create();
     }
@@ -41,6 +42,14 @@ public class EditDeckNameDialog extends DialogFragment {
             listener = (EditDeckNameDialog.EditDeckNameDialogListener) context;
         } catch (ClassCastException e) {
             throw new ClassCastException("You must implement NoticeDialogListener");
+        }
+    }
+
+    private void checkEmptiness(Context context, String newName) {
+        if(newName.equals("")){
+            Toast.makeText(context,"Empty new name, no edit done",Toast.LENGTH_LONG).show();
+        } else {
+            listener.onDoneEditing(newName);
         }
     }
 }

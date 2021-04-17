@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -51,7 +50,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         holder.front.setText(flashcard.getFrontText());
         //
         holder.delete.setOnClickListener(v -> {
-            // TODO doesn't work in decks null object reference
             FlashcardEntity cardToDelete = mData.remove(position);
             if(cardToDelete.getInDeck()){
                 DeckEntity deck = deckDS.getSingleDeckByID(cardToDelete.getAssociatedDeck());
@@ -79,8 +77,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         private final TextView front;
         private final TextView back;
         private final ImageButton edit;
-        private ImageButton delete;
-        private EasyFlipView theCardItself;
+        private final ImageButton delete;
+        private final EasyFlipView theCardItself;
 
         public MyViewHolder(View itemView) {
             super(itemView);

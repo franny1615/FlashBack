@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.flashback.AddFlashCard.AddNewFlashcard;
@@ -16,6 +15,7 @@ import com.example.flashback.DataSources.DeckDataSource;
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
+import com.example.flashback.DeckClasses.DeckDialogs.EditDeckNameDialog;
 import com.example.flashback.R;
 import com.example.flashback.RecyclerViewAdapters.RecyclerViewAdapter;
 
@@ -58,7 +58,7 @@ public class DeckScreen extends AppCompatActivity implements EditDeckNameDialog.
         myCardsRecyclerView.setAdapter(myCardsAdapter);
     }
 
-    public void getMyCardsOnly(List<Long> myIds){
+    private void getMyCardsOnly(List<Long> myIds){
         allcards = flashDS.loadAllFlashcardsFromDB();
         myCards = new ArrayList<>();
         for(int i = 0; i < myIds.size(); i++){
@@ -76,7 +76,7 @@ public class DeckScreen extends AppCompatActivity implements EditDeckNameDialog.
     }
 
     public void deleteDeck(View view){
-        // TODO do the cards go along with the deck removal, or just update each card inDeck status?
+        // TODO do the cards go along with the deck removal, or just update each card inDeck status
     }
 
     @Override
@@ -89,6 +89,7 @@ public class DeckScreen extends AppCompatActivity implements EditDeckNameDialog.
     public void onAddCardToDeck(View view){
         long lastKnownId = 0L;
         Intent intent = new Intent(this, AddNewFlashcard.class);
+        allcards = flashDS.loadAllFlashcardsFromDB();
         int size = allcards.size();
         if(size > 0) {
             lastKnownId = allcards.get(size-1).getId();
@@ -100,24 +101,27 @@ public class DeckScreen extends AppCompatActivity implements EditDeckNameDialog.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == DECK_WANTS_NEW_CARD) {
-                if (data != null){
-                    long id = data.getLongExtra(ID_NEW_CARD,DEFAULT_ID);
-                    if(id != DEFAULT_ID){
-                        FlashcardEntity newestCard = flashDS.getSingleFlashcardById(id);
-                        newestCard.setInDeck(true);
-                        //
-                        me.addCardToDeck(newestCard.getId());
-                        //
-                        myCardsAdapter.mData.add(newestCard);
-                        myCardsAdapter.notifyDataSetChanged();
-                        //
-                        flashDS.updateFlashcardInDB(newestCard);
-                        deckDS.updateDeckInDB(me);
-                    }
-                }
+        if (resultCode == Activity.RESULT_OK && (data != null)) {
+            if(requestCode == DECK_WANTS_NEW_CARD) {
+                cameBackFromAddingACard(data);
             }
+        }
+    }
+
+    public void cameBackFromAddingACard(Intent data) {
+        long id = data.getLongExtra(ID_NEW_CARD, DEFAULT_ID);
+        if (id != DEFAULT_ID) {
+            FlashcardEntity newestCard = flashDS.getSingleFlashcardById(id);
+            newestCard.setInDeck(true);
+            newestCard.setAssociatedDeck(me.getId());
+            //
+            me.addCardToDeck(newestCard.getId());
+            //
+            myCardsAdapter.mData.add(newestCard);
+            myCardsAdapter.notifyDataSetChanged();
+            //
+            flashDS.updateFlashcardInDB(newestCard);
+            deckDS.updateDeckInDB(me);
         }
     }
 }

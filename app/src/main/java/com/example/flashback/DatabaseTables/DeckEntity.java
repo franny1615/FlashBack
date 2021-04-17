@@ -22,7 +22,7 @@ public class DeckEntity {
     private long id;
 
     @TypeConverters(DeckCardIDListConverter.class)
-    private List<Long> cardIDs;
+    private final List<Long> cardIDs;
 
     private String deckName;
     private int size;

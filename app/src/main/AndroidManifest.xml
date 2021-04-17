@@ -14,6 +14,7 @@
             android:name=".DeckClasses.DeckScreen"
             android:parentActivityName=".MainActivity"/>
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".DeckClasses.AddDeck"
             android:parentActivityName=".MainActivity"/>
         <activity
