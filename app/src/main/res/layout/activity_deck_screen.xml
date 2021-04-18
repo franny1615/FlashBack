@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             app:fabSize="mini"
             app:srcCompat="@android:drawable/ic_input_delete"
-            android:contentDescription="@string/sample_deck_name" />
+            android:contentDescription="@string/sample_deck_name"
+            android:onClick="deleteDeck"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/deckScreenEditDeckButton"
             android:layout_width="wrap_content"

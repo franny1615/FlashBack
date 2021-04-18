@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
     public static String LAST_KNOWN_ID = "com.example.flashback.MainActivity.LastKnownId";
     public static String POSITION_IN_MEMORY = "com.example.flashback.MainActivity.PositionInMemory";
     public static String EDITED_FLASHCARD_DETAILS = "editedFlashcardDetails";
+    public static String DECK_DELETED_FLAG = "deckDeletedFlagFile";
+    public static String ID_OF_DELETED_DECK = "com.example.flashback.MainActivity.IdOfDeletedDeck";
     public static String CURRENT_RUNNING_DECK_ID = "com.example.flashback.MainActivity.CurrentRunningDeckId";
 
     public static long DEFAULT_ID = -1L;
@@ -52,17 +54,9 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         setContentView(R.layout.activity_main);
         //
         clearIdAndPositionInSharedPreferences();
+        clearIdOfDeckInSharedPreferences();
         flashcardDS = new FlashcardsDataSource(this);
         decksDS = new DeckDataSource(this);
-        //
-//        flashcardDS.deleteAllFlashcards();
-//        decksDS.deleteAllDecks();
-//        for(int i = 0; i < 20; i++){
-//            FlashcardEntity card = new FlashcardEntity();
-//            card.setFrontText("Card " + i);
-//            card.setBackText("desc " + i);
-//            flashcardDS.insertFlashcardIntoDB(card);
-//        }
         //
         setUpAllFlashcardsAdapter();
         setUpAllDecksAdapter();
@@ -73,6 +67,13 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         SharedPreferences.Editor shareEdit = shared.edit();
         shareEdit.putLong(ID_OF_EDITED_CARD,DEFAULT_ID);
         shareEdit.putInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
+        shareEdit.apply();
+    }
+
+    private void clearIdOfDeckInSharedPreferences(){
+        SharedPreferences shared = this.getSharedPreferences(DECK_DELETED_FLAG,Context.MODE_PRIVATE);
+        SharedPreferences.Editor shareEdit = shared.edit();
+        shareEdit.putLong(ID_OF_DELETED_DECK,DEFAULT_ID);
         shareEdit.apply();
     }
 
@@ -108,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
     public void onResume(){
         super.onResume();
         updateAndRefreshAllCardsAdapter();
+        updateIfDeckDeleted();
     }
 
     private void updateAndRefreshAllCardsAdapter() {
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         int position = editedCardStuff.getInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
         long idOfChangedCard = editedCardStuff.getLong(ID_OF_EDITED_CARD,DEFAULT_ID);
 
-        if((position != -1) && (idOfChangedCard != -1L)){
+        if((position != DEFAULT_POSITION) && (idOfChangedCard != DEFAULT_ID)){
             FlashcardEntity card = adapter.mData.get(position);
             FlashcardEntity cardFromDB = flashcardDS.getSingleFlashcardById(idOfChangedCard);
             card.setFrontText(cardFromDB.getFrontText());
@@ -125,6 +127,51 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
             //
             clearIdAndPositionInSharedPreferences();
         }
+    }
+
+    private void updateIfDeckDeleted(){
+        SharedPreferences editedCardStuff = this.getSharedPreferences(DECK_DELETED_FLAG,Context.MODE_PRIVATE);
+        long idOfPotentialDeath = editedCardStuff.getLong(ID_OF_DELETED_DECK,DEFAULT_ID);
+
+        if(idOfPotentialDeath != DEFAULT_ID) {
+            updateDeckAdapterWhenOneDeleted(idOfPotentialDeath);
+            updateCardsWhenDeckDeleted();
+            clearIdOfDeckInSharedPreferences();
+        }
+    }
+
+    private void updateDeckAdapterWhenOneDeleted(long idOfPotentialDeath) {
+        List<DeckEntity> list = deckAdapter.mData;
+        int indexOfRemoval = -1;
+        for(int i = 0; i < list.size(); i++) {
+            if(list.get(i).getId() == idOfPotentialDeath){
+                indexOfRemoval = i;
+                break;
+            }
+        }
+        if(indexOfRemoval >= 0){
+            deckAdapter.mData.remove(indexOfRemoval);
+            deckAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void updateCardsWhenDeckDeleted(){
+        List<FlashcardEntity> cards = flashcardDS.loadAllFlashcardsFromDB();
+        List<FlashcardEntity> current = adapter.mData;
+        // filter out already existing ones in adapter
+        for(int i = 0; i < current.size(); i++) {
+            for(int j = 0; j < cards.size(); j++){
+                if(cards.get(j).getId() == current.get(i).getId()){
+                    cards.remove(j);
+                    break;
+                }
+            }
+        }
+        // filter out ones that are in decks
+        cards = createNotInDeckList(cards);
+        // insert back into adapter
+        adapter.mData.addAll(cards);
+        adapter.notifyDataSetChanged();
     }
 
     public void addAFlashcard(View view){
