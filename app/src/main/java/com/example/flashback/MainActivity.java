@@ -58,6 +58,15 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         flashcardDS = new FlashcardsDataSource(this);
         decksDS = new DeckDataSource(this);
         //
+//        decksDS.deleteAllDecks();
+//        flashcardDS.deleteAllFlashcards();
+//        for(int i = 0; i < 20; i++){
+//            FlashcardEntity c = new FlashcardEntity();
+//            c.setFrontText("Card"+i);
+//            c.setBackText("desc"+i);
+//            flashcardDS.insertFlashcardIntoDB(c);
+//        }
+        //
         setUpAllFlashcardsAdapter();
         setUpAllDecksAdapter();
     }

@@ -17,6 +17,7 @@ import com.example.flashback.DataSources.DeckDataSource;
 import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
+import com.example.flashback.DeckClasses.DeckDialogs.DeckDeleteCardsDialog;
 import com.example.flashback.DeckClasses.DeckDialogs.DeleteDeckDialog;
 import com.example.flashback.DeckClasses.DeckDialogs.EditDeckNameDialog;
 import com.example.flashback.R;
@@ -38,7 +39,8 @@ import static com.example.flashback.MainActivity.POSITION_IN_MEMORY;
 
 public class DeckScreen extends AppCompatActivity implements
         EditDeckNameDialog.EditDeckNameDialogListener,
-        DeleteDeckDialog.DeleteDeckDialogListener {
+        DeleteDeckDialog.DeleteDeckDialogListener,
+        DeckDeleteCardsDialog.DeckDeleteCardsDialogListener{
 
     public static int DECK_WANTS_NEW_CARD = 6969;
 
@@ -200,4 +202,38 @@ public class DeckScreen extends AppCompatActivity implements
             clearIdAndPositionInSharedPreferences();
         }
     }
+
+    public void deleteCardsFromDeck(View view) {
+        DeckDeleteCardsDialog dialog = new DeckDeleteCardsDialog();
+        Bundle args = new Bundle();
+        args.putLong("ID_OF_DECK",me.getId());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(),"DELETE_CARDS_FROM_DECK");
+    }
+
+    @Override
+    public void onPositiveClick(List<Long> idsToDelete, long deck) {
+        for(int i = 0; i < idsToDelete.size(); i++) {
+            int j = 0;
+            FlashcardEntity card = myCardsAdapter.mData.get(j);
+            while(card.getId() != idsToDelete.get(i)){
+                j++;
+                card = myCardsAdapter.mData.get(j);
+            }
+            // update the adapter
+            myCardsAdapter.mData.remove(j);
+            myCardsAdapter.notifyDataSetChanged();
+            // update deck
+            DeckEntity d = deckDS.getSingleDeckByID(deck);
+            d.removeCardFromDeck(card.getId());
+            deckDS.updateDeckInDB(d);
+            // remove card from db
+            flashDS.deleteFlashcardInDB(card);
+        }
+    }
+
+    public void moveCardsFromDeck(View view) {
+
+    }
+
 }
