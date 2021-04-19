@@ -35,10 +35,19 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        FlashcardEntity card = mData.get(position);
+        final FlashcardEntity card = mData.get(position);
         holder.front.setText(card.getFrontText());
-        holder.me = card;
-        holder.selected = false;
+        holder.mycard.setBackgroundColor(card.isSelected() ? Color.DKGRAY : Color.WHITE);
+        holder.front.setOnClickListener(v -> {
+            if(!card.isSelected()){
+                cardSelectListener.onSelectedCardClick(card);
+                holder.changeBackgroundColor(Color.WHITE,Color.DKGRAY);
+            } else {
+                cardSelectListener.onDeselectCardClick(card);
+                holder.changeBackgroundColor(Color.MAGENTA,Color.DKGRAY);
+            }
+            card.setSelected(!card.isSelected());
+        });
     }
 
     @Override
@@ -46,30 +55,14 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
         return mData.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         private final TextView front;
         private final CardView mycard;
-        private FlashcardEntity me;
-        private boolean selected;
         public MyViewHolder(View itemView) {
             super(itemView);
             front = itemView.findViewById(R.id.select_item_front_text);
             mycard = itemView.findViewById(R.id.selected_card_cardview);
-            itemView.setOnClickListener(this);
         }
-
-        @Override
-        public void onClick(View v) {
-            if(!selected) {
-                changeBackgroundColor(Color.WHITE,Color.DKGRAY);
-                cardSelectListener.onSelectedCardClick(me);
-            } else {
-                changeBackgroundColor(Color.DKGRAY,Color.WHITE);
-                cardSelectListener.onDeselectCardClick(me);
-            }
-            selected = !selected;
-        }
-
         public void changeBackgroundColor(int colorFrom, int colorTo){
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
             colorAnimation.setDuration(400); // milliseconds

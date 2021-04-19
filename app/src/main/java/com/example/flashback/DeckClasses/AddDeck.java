@@ -80,6 +80,17 @@ public class AddDeck extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onDialogPositiveClick(DialogFragment fragment) {
+        fragment.dismiss();
+        finishAddingDeck();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment fragment) {
+        fragment.dismiss();
+    }
+
     private void finishAddingDeck(){
         DeckEntity newDeck = new DeckEntity(deckName.getText().toString(),selectedIds);
         DeckDataSource deckDS = new DeckDataSource(this);
@@ -95,6 +106,20 @@ public class AddDeck extends AppCompatActivity implements
         }
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    private void updateCardsAffected(){
+        for(int i = 0; i < selectedIds.size(); i++){
+            for(int j = 0; j < allcards.size(); j++){
+                FlashcardEntity card = allcards.get(i);
+                if(selectedIds.get(i) == card.getId()){
+                    card.setInDeck(false);
+                    card.setAssociatedDeck(-1L);
+                    flashDS.updateFlashcardInDB(card);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -121,30 +146,5 @@ public class AddDeck extends AppCompatActivity implements
     private void updateCardInDB(FlashcardEntity card) {
         FlashcardsDataSource ds = new FlashcardsDataSource(this);
         ds.updateFlashcardInDB(card);
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment fragment) {
-        fragment.dismiss();
-        finishAddingDeck();
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment fragment) {
-        fragment.dismiss();
-    }
-
-    private void updateCardsAffected(){
-        for(int i = 0; i < selectedIds.size(); i++){
-            for(int j = 0; j < allcards.size(); j++){
-                FlashcardEntity card = allcards.get(i);
-                if(selectedIds.get(i) == card.getId()){
-                    card.setInDeck(false);
-                    card.setAssociatedDeck(-1L);
-                    flashDS.updateFlashcardInDB(card);
-                    break;
-                }
-            }
-        }
     }
 }

@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
     <androidx.cardview.widget.CardView
         android:id="@+id/selected_card_cardview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:clickable="true"
+        android:focusable="true">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <TextView
-                android:padding="10dp"
-                android:layout_alignParentTop="true"
                 android:id="@+id/select_item_front_text"
-                android:textSize="18sp"
-                android:layout_centerVertical="true"
-                android:textAlignment="center"
-                android:gravity="center_horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/front_title" />
+                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_horizontal"
+                android:padding="10dp"
+                android:text="@string/front_title"
+                android:textAlignment="center"
+                android:textSize="18sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
