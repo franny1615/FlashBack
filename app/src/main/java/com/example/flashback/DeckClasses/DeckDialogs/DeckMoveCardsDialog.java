@@ -17,17 +17,20 @@ import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
 import com.example.flashback.RecyclerViewAdapters.SelectCardsRecyclerViewAdapter;
+import com.example.flashback.RecyclerViewAdapters.SelectDeckRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.flashback.MainActivity.ID_OF_DECK;
 
-public class DeckMoveCardsDialog extends DialogFragment implements SelectCardsRecyclerViewAdapter.SelectCardClickListener {
+public class DeckMoveCardsDialog extends DialogFragment implements
+        SelectCardsRecyclerViewAdapter.SelectCardClickListener,
+        SelectDeckRecyclerViewAdapter.SelectDeckRecyclerViewAdapterListener{
 
     private List<Long> idsToMove;
-    private List<Long> allMyIds;
     private DeckEntity me;
+    private long deckIdToMoveTo;
 
     public interface DeckMoveCardsDialogListener {
         void onPositiveMoveMultipleCardsClick(List<Long> idsThatMoved, long deckTheyCameFrom, long deckTheyGoingTo);
@@ -51,8 +54,22 @@ public class DeckMoveCardsDialog extends DialogFragment implements SelectCardsRe
         selectCards.setHasFixedSize(true);
         selectCards.setAdapter(cardsAdapter);
         //
+        RecyclerView selectDeck = customView.findViewById(R.id.deckScreen_move_cards_selectDeck_recyclerview);
+        DeckDataSource deckDS = new DeckDataSource(getContext());
+        List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
+        for(int i = 0; i < decks.size(); i++) {
+            if(decks.get(i).getDeckName().equals(me.getDeckName())){
+                decks.remove(i);
+                break;
+            }
+        }
+        //
+        SelectDeckRecyclerViewAdapter decksAdapter = new SelectDeckRecyclerViewAdapter(decks,this);
+        selectDeck.setHasFixedSize(true);
+        selectDeck.setAdapter(decksAdapter);
+        //
         builder.setView(customView);
-        builder.setPositiveButton("Done", (dialog, id) -> listener.onPositiveMoveMultipleCardsClick(idsToMove, me.getId(),-1L));
+        builder.setPositiveButton("Move", (dialog, id) -> listener.onPositiveMoveMultipleCardsClick(idsToMove,me.getId(),deckIdToMoveTo));
         builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
         return builder.create();
     }
@@ -62,7 +79,7 @@ public class DeckMoveCardsDialog extends DialogFragment implements SelectCardsRe
         if(deckId != -1L) {
             DeckDataSource deckDS = new DeckDataSource(getContext());
             me = deckDS.getSingleDeckByID(deckId);
-            allMyIds = me.getCardIDs();
+            List<Long> allMyIds = me.getCardIDs();
             //
             FlashcardsDataSource flashDS = new FlashcardsDataSource(getContext());
             //
@@ -77,12 +94,22 @@ public class DeckMoveCardsDialog extends DialogFragment implements SelectCardsRe
 
     @Override
     public void onSelectedCardClick(FlashcardEntity card) {
-
+        idsToMove.add(card.getId());
     }
 
     @Override
     public void onDeselectCardClick(FlashcardEntity card) {
+        idsToMove.add(card.getId());
+    }
 
+    @Override
+    public void onSelectedDeckClick(DeckEntity deck) {
+        deckIdToMoveTo = deck.getId();
+    }
+
+    @Override
+    public void onDeselectDeckClick() {
+        deckIdToMoveTo = -1L;
     }
 
     @Override

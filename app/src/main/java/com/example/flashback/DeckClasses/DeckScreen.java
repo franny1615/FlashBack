@@ -244,6 +244,6 @@ public class DeckScreen extends AppCompatActivity implements
 
     @Override
     public void onPositiveMoveMultipleCardsClick(List<Long> idsThatMoved, long deckTheyCameFrom, long deckTheyGoingTo) {
-
+        // TODO first check for the -1 deckTheyGoingTo, Toast saying they didn't select a destination
     }
 }
