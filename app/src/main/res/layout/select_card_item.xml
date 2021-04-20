@@ -23,9 +23,9 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerVertical="true"
                 android:gravity="center_horizontal"
-                android:padding="10dp"
                 android:text="@string/front_title"
                 android:textAlignment="center"
+                android:padding="5dp"
                 android:textSize="18sp" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

@@ -41,12 +41,11 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
         holder.front.setOnClickListener(v -> {
             if(!card.isSelected()){
                 cardSelectListener.onSelectedCardClick(card);
-                holder.changeBackgroundColor(Color.WHITE,Color.DKGRAY);
             } else {
                 cardSelectListener.onDeselectCardClick(card);
-                holder.changeBackgroundColor(Color.MAGENTA,Color.DKGRAY);
             }
             card.setSelected(!card.isSelected());
+            holder.mycard.setBackgroundColor(card.isSelected() ? Color.DKGRAY : Color.WHITE);
         });
     }
 
@@ -62,12 +61,6 @@ public class SelectCardsRecyclerViewAdapter extends RecyclerView.Adapter<SelectC
             super(itemView);
             front = itemView.findViewById(R.id.select_item_front_text);
             mycard = itemView.findViewById(R.id.selected_card_cardview);
-        }
-        public void changeBackgroundColor(int colorFrom, int colorTo){
-            ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-            colorAnimation.setDuration(400); // milliseconds
-            colorAnimation.addUpdateListener(animator -> mycard.setBackgroundColor((int) animator.getAnimatedValue()));
-            colorAnimation.start();
         }
     }
 

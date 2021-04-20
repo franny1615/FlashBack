@@ -17,6 +17,8 @@ import com.example.flashback.DatabaseTables.FlashcardEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.flashback.MainActivity.ID_OF_DECK;
+
 public class DeckDeleteCardsDialog extends DialogFragment {
 
     private List<Long> idsToDelete;
@@ -24,7 +26,7 @@ public class DeckDeleteCardsDialog extends DialogFragment {
     private DeckEntity me;
 
     public interface DeckDeleteCardsDialogListener {
-        void onPositiveClick(List<Long> idsToDelete, long deck);
+        void onPositiveDeleteMultipleCardsClick(List<Long> idsToDelete, long deck);
     }
 
     private DeckDeleteCardsDialogListener listener;
@@ -37,7 +39,7 @@ public class DeckDeleteCardsDialog extends DialogFragment {
         builder.setTitle("Select Cards to Delete: ");
         long deckId = -1L;
         if(getArguments() != null){
-            deckId = getArguments().getLong("ID_OF_DECK");
+            deckId = getArguments().getLong(ID_OF_DECK);
         }
         builder.setMultiChoiceItems(getMyCards(deckId), null, (DialogInterface.OnMultiChoiceClickListener) (dialog, which, isChecked) -> {
             if(!isChecked){
@@ -46,7 +48,7 @@ public class DeckDeleteCardsDialog extends DialogFragment {
                 idsToDelete.add(allMyIds.get(which));
             }
         });
-        builder.setPositiveButton("Delete", (dialog, id) -> listener.onPositiveClick(idsToDelete, me.getId()));
+        builder.setPositiveButton("Delete", (dialog, id) -> listener.onPositiveDeleteMultipleCardsClick(idsToDelete, me.getId()));
         builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
         return builder.create();
     }
