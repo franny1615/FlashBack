@@ -26,7 +26,7 @@ import static com.example.flashback.MainActivity.ID_OF_DECK;
 
 public class DeckMoveCardsDialog extends DialogFragment implements
         SelectCardsRecyclerViewAdapter.SelectCardClickListener,
-        SelectDeckRecyclerViewAdapter.SelectDeckRecyclerViewAdapterListener{
+        SelectDeckRecyclerViewAdapter.SelectDeckRecyclerViewAdapterListener {
 
     private List<Long> idsToMove;
     private DeckEntity me;
@@ -44,39 +44,39 @@ public class DeckMoveCardsDialog extends DialogFragment implements
         idsToMove = new ArrayList<>();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         long deckId = -1L;
-        if(getArguments() != null){
+        if (getArguments() != null) {
             deckId = getArguments().getLong(ID_OF_DECK);
         }
         //
-        View customView = requireActivity().getLayoutInflater().inflate(R.layout.move_cards_out_dialog,null);
+        View customView = requireActivity().getLayoutInflater().inflate(R.layout.move_cards_out_dialog, null);
         RecyclerView selectCards = customView.findViewById(R.id.deckScreen_move_cards_select_recyclerview);
-        SelectCardsRecyclerViewAdapter cardsAdapter = new SelectCardsRecyclerViewAdapter(getMyCards(deckId),this);
+        SelectCardsRecyclerViewAdapter cardsAdapter = new SelectCardsRecyclerViewAdapter(getMyCards(deckId), this);
         selectCards.setHasFixedSize(true);
         selectCards.setAdapter(cardsAdapter);
         //
         RecyclerView selectDeck = customView.findViewById(R.id.deckScreen_move_cards_selectDeck_recyclerview);
         DeckDataSource deckDS = new DeckDataSource(getContext());
         List<DeckEntity> decks = deckDS.loadAllDecksFromDB();
-        for(int i = 0; i < decks.size(); i++) {
-            if(decks.get(i).getDeckName().equals(me.getDeckName())){
+        for (int i = 0; i < decks.size(); i++) {
+            if (decks.get(i).getDeckName().equals(me.getDeckName())) {
                 decks.remove(i);
                 break;
             }
         }
         //
-        SelectDeckRecyclerViewAdapter decksAdapter = new SelectDeckRecyclerViewAdapter(decks,this);
+        SelectDeckRecyclerViewAdapter decksAdapter = new SelectDeckRecyclerViewAdapter(decks, this);
         selectDeck.setHasFixedSize(true);
         selectDeck.setAdapter(decksAdapter);
         //
         builder.setView(customView);
-        builder.setPositiveButton("Move", (dialog, id) -> listener.onPositiveMoveMultipleCardsClick(idsToMove,me.getId(),deckIdToMoveTo));
+        builder.setPositiveButton("Move", (dialog, id) -> listener.onPositiveMoveMultipleCardsClick(idsToMove, me.getId(), deckIdToMoveTo));
         builder.setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
         return builder.create();
     }
 
-    private List<FlashcardEntity> getMyCards(Long deckId){
+    private List<FlashcardEntity> getMyCards(Long deckId) {
         List<FlashcardEntity> theCards = null;
-        if(deckId != -1L) {
+        if (deckId != -1L) {
             DeckDataSource deckDS = new DeckDataSource(getContext());
             me = deckDS.getSingleDeckByID(deckId);
             List<Long> allMyIds = me.getCardIDs();
@@ -84,7 +84,7 @@ public class DeckMoveCardsDialog extends DialogFragment implements
             FlashcardsDataSource flashDS = new FlashcardsDataSource(getContext());
             //
             theCards = new ArrayList<>();
-            for(int i = 0; i < me.getSize(); i++) {
+            for (int i = 0; i < me.getSize(); i++) {
                 FlashcardEntity card = flashDS.getSingleFlashcardById(allMyIds.get(i));
                 theCards.add(card);
             }

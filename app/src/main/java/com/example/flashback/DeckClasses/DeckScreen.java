@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.flashback.AddFlashCard.AddNewFlashcard;
 import com.example.flashback.DataSources.DeckDataSource;
@@ -42,9 +43,12 @@ public class DeckScreen extends AppCompatActivity implements
         EditDeckNameDialog.EditDeckNameDialogListener,
         DeleteDeckDialog.DeleteDeckDialogListener,
         DeckDeleteCardsDialog.DeckDeleteCardsDialogListener,
-        DeckMoveCardsDialog.DeckMoveCardsDialogListener{
+        DeckMoveCardsDialog.DeckMoveCardsDialogListener {
 
     public static int DECK_WANTS_NEW_CARD = 6969;
+    private final int DELETE_CARDS = 1;
+    private final int MOVE_CARDS = 2;
+    private final long DEFAULT_NEW_DECK_ID = -1L;
 
     private List<FlashcardEntity> myCards;
     private FlashcardsDataSource flashDS;
@@ -63,50 +67,50 @@ public class DeckScreen extends AppCompatActivity implements
         flashDS = new FlashcardsDataSource(this);
         deckDS = new DeckDataSource(this);
         //
-        me = deckDS.getSingleDeckByID(getIntent().getLongExtra(ID_OF_DECK,0L));
+        me = deckDS.getSingleDeckByID(getIntent().getLongExtra(ID_OF_DECK, 0L));
         myName = findViewById(R.id.deck_screen_deckname_textview);
         myName.setText(me.getDeckName());
         //
         RecyclerView myCardsRecyclerView = findViewById(R.id.deck_screen_recyclerview);
         getMyCardsOnly(me.getCardIDs());
-        myCardsAdapter = new RecyclerViewAdapter(myCards,this);
+        myCardsAdapter = new RecyclerViewAdapter(myCards, this);
         myCardsRecyclerView.setAdapter(myCardsAdapter);
     }
 
     private void clearIdAndPositionInSharedPreferences() {
-        SharedPreferences shared = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
+        SharedPreferences shared = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS, Context.MODE_PRIVATE);
         SharedPreferences.Editor shareEdit = shared.edit();
-        shareEdit.putLong(ID_OF_EDITED_CARD,DEFAULT_ID);
-        shareEdit.putInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
+        shareEdit.putLong(ID_OF_EDITED_CARD, DEFAULT_ID);
+        shareEdit.putInt(POSITION_IN_MEMORY, DEFAULT_POSITION);
         shareEdit.apply();
     }
 
-    private void getMyCardsOnly(List<Long> myIds){
+    private void getMyCardsOnly(List<Long> myIds) {
         allcards = flashDS.loadAllFlashcardsFromDB();
         myCards = new ArrayList<>();
-        for(int i = 0; i < myIds.size(); i++){
-            for(FlashcardEntity card: allcards) {
-                if(card.getId() == myIds.get(i)){
+        for (int i = 0; i < myIds.size(); i++) {
+            for (FlashcardEntity card : allcards) {
+                if (card.getId() == myIds.get(i)) {
                     myCards.add(card);
                 }
             }
         }
     }
 
-    public void editDeckName(View view){
+    public void editDeckName(View view) {
         EditDeckNameDialog dialog = new EditDeckNameDialog();
         dialog.show(getSupportFragmentManager(), "EDIT_DECK");
     }
 
-    public void deleteDeck(View view){
+    public void deleteDeck(View view) {
         DeleteDeckDialog dialog = new DeleteDeckDialog();
-        dialog.show(getSupportFragmentManager(),"DELETE_DECK");
+        dialog.show(getSupportFragmentManager(), "DELETE_DECK");
     }
 
     @Override
     public void onDeleteEverything() {
         List<Long> myIds = me.getCardIDs();
-        for(int i = 0; i < me.getSize(); i++){
+        for (int i = 0; i < me.getSize(); i++) {
             FlashcardEntity card = flashDS.getSingleFlashcardById(myIds.get(i));
             flashDS.deleteFlashcardInDB(card);
         }
@@ -118,7 +122,7 @@ public class DeckScreen extends AppCompatActivity implements
     @Override
     public void onDeleteKeepCards() {
         List<Long> myIds = me.getCardIDs();
-        for(int i = 0; i < me.getSize(); i++) {
+        for (int i = 0; i < me.getSize(); i++) {
             FlashcardEntity card = flashDS.getSingleFlashcardById(myIds.get(i));
             card.setAssociatedDeck(0L);
             card.setInDeck(false);
@@ -129,10 +133,10 @@ public class DeckScreen extends AppCompatActivity implements
         finish();
     }
 
-    private void setDeletionFlag(long id){
+    private void setDeletionFlag(long id) {
         SharedPreferences shared = this.getSharedPreferences(DECK_DELETED_FLAG, Context.MODE_PRIVATE);
         SharedPreferences.Editor shareEdit = shared.edit();
-        shareEdit.putLong(ID_OF_DELETED_DECK,id);
+        shareEdit.putLong(ID_OF_DELETED_DECK, id);
         shareEdit.apply();
     }
 
@@ -143,15 +147,15 @@ public class DeckScreen extends AppCompatActivity implements
         deckDS.updateDeckInDB(me);
     }
 
-    public void onAddCardToDeck(View view){
+    public void onAddCardToDeck(View view) {
         long lastKnownId = 0L;
         Intent intent = new Intent(this, AddNewFlashcard.class);
         allcards = flashDS.loadAllFlashcardsFromDB();
         int size = allcards.size();
-        if(size > 0) {
-            lastKnownId = allcards.get(size-1).getId();
+        if (size > 0) {
+            lastKnownId = allcards.get(size - 1).getId();
         }
-        intent.putExtra(LAST_KNOWN_ID,lastKnownId);
+        intent.putExtra(LAST_KNOWN_ID, lastKnownId);
         startActivityForResult(intent, DECK_WANTS_NEW_CARD);
     }
 
@@ -159,7 +163,7 @@ public class DeckScreen extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && (data != null)) {
-            if(requestCode == DECK_WANTS_NEW_CARD) {
+            if (requestCode == DECK_WANTS_NEW_CARD) {
                 cameBackFromAddingACard(data);
             }
         }
@@ -183,22 +187,22 @@ public class DeckScreen extends AppCompatActivity implements
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         updateAndRefreshAllCardsAdapter();
     }
 
     private void updateAndRefreshAllCardsAdapter() {
-        SharedPreferences editedCardStuff = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS,Context.MODE_PRIVATE);
-        int position = editedCardStuff.getInt(POSITION_IN_MEMORY,DEFAULT_POSITION);
-        long idOfChangedCard = editedCardStuff.getLong(ID_OF_EDITED_CARD,DEFAULT_ID);
+        SharedPreferences editedCardStuff = this.getSharedPreferences(EDITED_FLASHCARD_DETAILS, Context.MODE_PRIVATE);
+        int position = editedCardStuff.getInt(POSITION_IN_MEMORY, DEFAULT_POSITION);
+        long idOfChangedCard = editedCardStuff.getLong(ID_OF_EDITED_CARD, DEFAULT_ID);
 
-        if((position != DEFAULT_POSITION) && (idOfChangedCard != DEFAULT_ID)){
+        if ((position != DEFAULT_POSITION) && (idOfChangedCard != DEFAULT_ID)) {
             FlashcardEntity card = myCardsAdapter.mData.get(position);
             FlashcardEntity cardFromDB = flashDS.getSingleFlashcardById(idOfChangedCard);
             card.setFrontText(cardFromDB.getFrontText());
             card.setBackText(cardFromDB.getBackText());
-            myCardsAdapter.mData.set(position,card);
+            myCardsAdapter.mData.set(position, card);
             myCardsAdapter.notifyDataSetChanged();
             //
             clearIdAndPositionInSharedPreferences();
@@ -208,17 +212,42 @@ public class DeckScreen extends AppCompatActivity implements
     public void deleteCardsFromDeck(View view) {
         DeckDeleteCardsDialog dialog = new DeckDeleteCardsDialog();
         Bundle args = new Bundle();
-        args.putLong(ID_OF_DECK,me.getId());
+        args.putLong(ID_OF_DECK, me.getId());
         dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(),"DELETE_CARDS_FROM_DECK");
+        dialog.show(getSupportFragmentManager(), "DELETE_CARDS_FROM_DECK");
+    }
+
+    public void moveCardsFromDeck(View view) {
+        DeckMoveCardsDialog dialog = new DeckMoveCardsDialog();
+        Bundle args = new Bundle();
+        args.putLong(ID_OF_DECK, me.getId());
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "MOVE_CARDS_FROM_DECK");
     }
 
     @Override
     public void onPositiveDeleteMultipleCardsClick(List<Long> idsToDelete, long deck) {
-        for(int i = 0; i < idsToDelete.size(); i++) {
+        moveOrDeleteCards(DELETE_CARDS,idsToDelete,deck,DEFAULT_NEW_DECK_ID);
+    }
+
+    @Override
+    public void onPositiveMoveMultipleCardsClick(List<Long> idsThatMoved, long deckTheyCameFrom, long deckTheyGoingTo) {
+        if(idsThatMoved.isEmpty()){
+            Toast.makeText(this,"No cards to move",Toast.LENGTH_LONG).show();
+        }
+        else if(deckTheyGoingTo <= 0){
+            Toast.makeText(this,"New folder not selected",Toast.LENGTH_LONG).show();
+        }
+        else {
+            moveOrDeleteCards(MOVE_CARDS,idsThatMoved,deckTheyCameFrom,deckTheyGoingTo);
+        }
+    }
+
+    private void moveOrDeleteCards(int flag, List<Long> ids, long originalDeck, long newDeckId){
+        for (int i = 0; i < ids.size(); i++) {
             int j = 0;
             FlashcardEntity card = myCardsAdapter.mData.get(j);
-            while(card.getId() != idsToDelete.get(i)){
+            while (card.getId() != ids.get(i)) {
                 j++;
                 card = myCardsAdapter.mData.get(j);
             }
@@ -226,24 +255,20 @@ public class DeckScreen extends AppCompatActivity implements
             myCardsAdapter.mData.remove(j);
             myCardsAdapter.notifyDataSetChanged();
             // update deck
-            DeckEntity d = deckDS.getSingleDeckByID(deck);
+            DeckEntity d = deckDS.getSingleDeckByID(originalDeck);
             d.removeCardFromDeck(card.getId());
             deckDS.updateDeckInDB(d);
-            // remove card from db
-            flashDS.deleteFlashcardInDB(card);
+            if(flag == MOVE_CARDS) {
+                DeckEntity newHome = deckDS.getSingleDeckByID(newDeckId);
+                newHome.addCardToDeck(card.getId());
+                deckDS.updateDeckInDB(newHome);
+                //
+                card.setAssociatedDeck(newDeckId);
+                flashDS.updateFlashcardInDB(card);
+            }
+            else if(flag == DELETE_CARDS){
+                flashDS.deleteFlashcardInDB(card);
+            }
         }
-    }
-
-    public void moveCardsFromDeck(View view) {
-        DeckMoveCardsDialog dialog = new DeckMoveCardsDialog();
-        Bundle args = new Bundle();
-        args.putLong(ID_OF_DECK,me.getId());
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(),"MOVE_CARDS_FROM_DECK");
-    }
-
-    @Override
-    public void onPositiveMoveMultipleCardsClick(List<Long> idsThatMoved, long deckTheyCameFrom, long deckTheyGoingTo) {
-        // TODO first check for the -1 deckTheyGoingTo, Toast saying they didn't select a destination
     }
 }
