@@ -18,7 +18,7 @@
         android:id="@+id/deckScreen_move_cards_select_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

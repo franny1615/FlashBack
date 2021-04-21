@@ -6,9 +6,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.flashback.DataSources.DeckDataSource;
@@ -48,7 +50,7 @@ public class DeckMoveCardsDialog extends DialogFragment implements
             deckId = getArguments().getLong(ID_OF_DECK);
         }
         //
-        View customView = requireActivity().getLayoutInflater().inflate(R.layout.move_cards_out_dialog, null);
+        View customView = requireActivity().getLayoutInflater().inflate(R.layout.move_cards_out_dialog,null);
         RecyclerView selectCards = customView.findViewById(R.id.deckScreen_move_cards_select_recyclerview);
         SelectCardsRecyclerViewAdapter cardsAdapter = new SelectCardsRecyclerViewAdapter(getMyCards(deckId), this);
         selectCards.setHasFixedSize(true);

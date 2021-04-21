@@ -21,8 +21,7 @@ public class SelectDeckRecyclerViewAdapter extends RecyclerView.Adapter<SelectDe
 
     final private SelectDeckRecyclerViewAdapterListener deckSelectListener;
     public List<DeckEntity> mData;
-    private static int lastPositionChecked = -1;
-
+    private int lastPositionChecked = -1;
 
     public SelectDeckRecyclerViewAdapter (List<DeckEntity> mData, SelectDeckRecyclerViewAdapterListener cardSelectListener) {
         this.mData = mData;
