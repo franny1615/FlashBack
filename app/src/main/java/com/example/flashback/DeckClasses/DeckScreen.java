@@ -218,11 +218,8 @@ public class DeckScreen extends AppCompatActivity implements
     }
 
     public void moveCardsFromDeck(View view) {
-        DeckMoveCardsDialog dialog = new DeckMoveCardsDialog();
-        Bundle args = new Bundle();
-        args.putLong(ID_OF_DECK, me.getId());
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "MOVE_CARDS_FROM_DECK");
+        DeckMoveCardsDialog dialog = new DeckMoveCardsDialog(this, me.getId(),this);
+        dialog.show();
     }
 
     @Override

@@ -16,9 +16,10 @@ import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.DeckClasses.DeckDialogs.DeckConfirmEmptyListDialog;
 import com.example.flashback.R;
-import com.example.flashback.RecyclerViewAdapters.SelectCardsRecyclerViewAdapter;
+import com.example.flashback.RecyclerViewAdapters.SelectItemRecyclerViewAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.example.flashback.MainActivity.CURRENT_RUNNING_DECK_ID;
@@ -26,7 +27,7 @@ import static com.example.flashback.MainActivity.DEFAULT_ID;
 import static com.example.flashback.MainActivity.ID_OF_DECK;
 
 public class AddDeck extends AppCompatActivity implements
-        SelectCardsRecyclerViewAdapter.SelectCardClickListener,
+        SelectItemRecyclerViewAdapter.SelectItemRecyclerViewAdapterListener,
         DeckConfirmEmptyListDialog.ConfirmEmptyDialogListener {
 
     private List<Long> selectedIds;
@@ -42,7 +43,7 @@ public class AddDeck extends AppCompatActivity implements
         selectedIds = new ArrayList<>();
         //
         flashDS = new FlashcardsDataSource(this);
-        SelectCardsRecyclerViewAdapter adapter = new SelectCardsRecyclerViewAdapter(createNotInDeckList(), this);
+        SelectItemRecyclerViewAdapter<FlashcardEntity> adapter = new SelectItemRecyclerViewAdapter<>(createNotInDeckList(), this);
         RecyclerView selectRV = findViewById(R.id.deck_createscreen_recyclerview);
         selectRV.setHasFixedSize(true);
         selectRV.setAdapter(adapter);
@@ -122,29 +123,35 @@ public class AddDeck extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onSelectedCardClick(FlashcardEntity card){
-        card.setInDeck(true);
-        selectedIds.add(card.getId());
-        card.setAssociatedDeck(newId+1);
-        updateCardInDB(card);
-    }
-
-    @Override
-    public void onDeselectCardClick(FlashcardEntity card){
-        for(int i = 0; i < selectedIds.size(); i++){
-            if(card.getId() == selectedIds.get(i)){
-                selectedIds.remove(i);
-                card.setInDeck(false);
-                card.setAssociatedDeck(0L);
-                updateCardInDB(card);
-                break;
-            }
-        }
-    }
-
     private void updateCardInDB(FlashcardEntity card) {
         FlashcardsDataSource ds = new FlashcardsDataSource(this);
         ds.updateFlashcardInDB(card);
+    }
+
+    @Override
+    public void onSelectItem(Object item) {
+        if(item instanceof FlashcardEntity){
+            FlashcardEntity card = (FlashcardEntity) item;
+            card.setInDeck(true);
+            selectedIds.add(card.getId());
+            card.setAssociatedDeck(newId+1);
+            updateCardInDB(card);
+        }
+    }
+
+    @Override
+    public void onDeselectItem(Object item) {
+        if(item instanceof FlashcardEntity){
+            FlashcardEntity card = (FlashcardEntity) item;
+            for(int i = 0; i < selectedIds.size(); i++){
+                if(card.getId() == selectedIds.get(i)){
+                    selectedIds.remove(i);
+                    card.setInDeck(false);
+                    card.setAssociatedDeck(0L);
+                    updateCardInDB(card);
+                    break;
+                }
+            }
+        }
     }
 }

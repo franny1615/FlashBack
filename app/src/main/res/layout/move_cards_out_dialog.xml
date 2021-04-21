@@ -34,4 +34,23 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+        <Button
+            android:id="@+id/deckScreen_move_cards_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/move"
+            android:layout_margin="5dp" />
+        <Button
+            android:id="@+id/deckScreen_move_cards_cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cancel"
+            android:layout_margin="5dp"
+            android:layout_toRightOf="@+id/deckScreen_move_cards_button"
+            android:layout_toEndOf="@+id/deckScreen_move_cards_button" />
+    </RelativeLayout>
 </LinearLayout>

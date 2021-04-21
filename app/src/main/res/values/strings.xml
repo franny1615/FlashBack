@@ -31,4 +31,6 @@
     <string name="edit_deck_name"><u>Edit Deck Name</u></string>
     <string name="select_cards_to_move"><u>Select Cards To Move</u></string>
     <string name="move_to"><u>Move To</u></string>
+    <string name="move">Move</string>
+    <string name="cancel">Cancel</string>
 </resources>
