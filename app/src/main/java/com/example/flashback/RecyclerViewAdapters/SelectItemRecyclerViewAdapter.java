@@ -42,7 +42,7 @@ public class SelectItemRecyclerViewAdapter<T> extends RecyclerView.Adapter<Selec
             bindForDeckSelection((DeckEntity) item, holder);
         }
         if(item instanceof FlashcardEntity){
-            bindForCardSelection((FlashcardEntity) item, holder, position);
+            bindForCardSelection((FlashcardEntity) item, holder);
         }
     }
 
@@ -63,7 +63,7 @@ public class SelectItemRecyclerViewAdapter<T> extends RecyclerView.Adapter<Selec
         });
     }
 
-    private void bindForCardSelection(FlashcardEntity item, MyViewHolder holder, int position) {
+    private void bindForCardSelection(FlashcardEntity item, MyViewHolder holder) {
         holder.front.setText(item.getFrontText());
         holder.front.setBackgroundColor(item.isSelected() ? Color.DKGRAY : Color.WHITE);
         holder.front.setOnClickListener(v -> {
