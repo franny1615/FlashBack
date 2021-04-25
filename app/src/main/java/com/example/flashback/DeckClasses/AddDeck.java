@@ -115,7 +115,7 @@ public class AddDeck extends AppCompatActivity implements
                 FlashcardEntity card = allcards.get(i);
                 if(selectedIds.get(i) == card.getId()){
                     card.setInDeck(false);
-                    card.setAssociatedDeck(-1L);
+                    card.setAssociatedDeck(0L);
                     flashDS.updateFlashcardInDB(card);
                     break;
                 }
