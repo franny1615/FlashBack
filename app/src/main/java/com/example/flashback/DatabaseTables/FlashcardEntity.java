@@ -1,6 +1,7 @@
 package com.example.flashback.DatabaseTables;
 
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "flashcard_table")
@@ -15,6 +16,9 @@ public class FlashcardEntity {
     private String backText;
     private boolean inDeck;
     private Long associatedDeck;
+
+    @Ignore
+    private boolean selected = false;
 
     public FlashcardEntity()
     {
@@ -58,5 +62,13 @@ public class FlashcardEntity {
     {
         if(deckID >= 0)
             this.associatedDeck = deckID;
+    }
+
+    public void setSelected(boolean selected){
+        this.selected = selected;
+    }
+
+    public boolean isSelected(){
+        return this.selected;
     }
 }

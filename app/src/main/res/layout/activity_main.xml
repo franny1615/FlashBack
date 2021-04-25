@@ -1,31 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
-
-    <ImageButton
-        android:id="@+id/addACardButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        android:src="@android:drawable/ic_input_add"
-        android:background="@drawable/round_button_shape"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/add_button_description"
-        android:onClick="addAFlashcard"/>
-
+    android:orientation="vertical"
+    android:weightSum="1"
+    tools:context=".MainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/deck_title_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/deckstitle"
+            android:textSize="30sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/deck_actions_add_deck"
+            android:layout_toStartOf="@+id/deck_actions_add_deck"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/deck_actions_add_deck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
+            android:onClick="addDeck"
+            android:src="@android:drawable/ic_input_add"
+            android:contentDescription="@string/select_cards"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="0dp"
+        android:layout_weight="0.25"
+        android:id="@+id/deck_recycler_view"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/addACardButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/flashcards_title_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/flashcardstitle"
+            android:textSize="30sp"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:paddingLeft="5dp"
+            android:paddingStart="5dp"
+            android:paddingRight="5dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/flash_actions_add_card"
+            android:layout_toStartOf="@+id/flash_actions_add_card"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"  />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/flash_actions_add_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
+            android:onClick="addAFlashcard"
+            android:src="@android:drawable/ic_input_add"
+            android:contentDescription="@string/select_cards"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_weight="0.75"
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layoutManager="LinearLayoutManager" />
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.room.Room;
+import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
@@ -22,7 +23,7 @@ public class DeckEntity {
     private long id;
 
     @TypeConverters(DeckCardIDListConverter.class)
-    private List<Long> cardIDs;
+    private final List<Long> cardIDs;
 
     private String deckName;
     private int size;
@@ -102,5 +103,4 @@ public class DeckEntity {
     {
         return this.size;
     }
-
 }
