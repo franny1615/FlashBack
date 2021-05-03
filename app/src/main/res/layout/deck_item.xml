@@ -18,7 +18,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:src="@drawable/ic_source"
+                android:src="@drawable/ic_baseline_folder_24"
                 android:id="@+id/deck_item_folder_icon"
                 android:padding="10dp"
                 android:contentDescription="@string/deck_item_img_desc" />

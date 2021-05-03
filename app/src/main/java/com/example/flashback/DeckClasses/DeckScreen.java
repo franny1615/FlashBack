@@ -2,6 +2,7 @@ package com.example.flashback.DeckClasses;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
@@ -9,8 +10,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.flashback.AddFlashCard.AddNewFlashcard;
@@ -27,6 +29,7 @@ import com.example.flashback.RecyclerViewAdapters.RecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.example.flashback.MainActivity.DECK_DELETED_FLAG;
 import static com.example.flashback.MainActivity.DEFAULT_ID;
@@ -53,7 +56,6 @@ public class DeckScreen extends AppCompatActivity implements
     private List<FlashcardEntity> myCards;
     private FlashcardsDataSource flashDS;
     private DeckDataSource deckDS;
-    private TextView myName;
     private RecyclerViewAdapter myCardsAdapter;
     private DeckEntity me;
     private List<FlashcardEntity> allcards;
@@ -68,13 +70,23 @@ public class DeckScreen extends AppCompatActivity implements
         deckDS = new DeckDataSource(this);
         //
         me = deckDS.getSingleDeckByID(getIntent().getLongExtra(ID_OF_DECK, 0L));
-        myName = findViewById(R.id.deck_screen_deckname_textview);
-        myName.setText(me.getDeckName());
         //
         RecyclerView myCardsRecyclerView = findViewById(R.id.deck_screen_recyclerview);
         getMyCardsOnly(me.getCardIDs());
         myCardsAdapter = new RecyclerViewAdapter(myCards, this);
         myCardsRecyclerView.setAdapter(myCardsAdapter);
+        //
+        Toolbar t  = findViewById(R.id.deck_screen_toolbar);
+        t.setTitle(me.getDeckName());
+        setSupportActionBar(t);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.deck_screen_menu, menu);
+        return true;
     }
 
     private void clearIdAndPositionInSharedPreferences() {
@@ -97,12 +109,12 @@ public class DeckScreen extends AppCompatActivity implements
         }
     }
 
-    public void editDeckName(View view) {
+    public void editDeckName(MenuItem item) {
         EditDeckNameDialog dialog = new EditDeckNameDialog();
         dialog.show(getSupportFragmentManager(), "EDIT_DECK");
     }
 
-    public void deleteDeck(View view) {
+    public void deleteDeck(MenuItem item) {
         DeleteDeckDialog dialog = new DeleteDeckDialog();
         dialog.show(getSupportFragmentManager(), "DELETE_DECK");
     }
@@ -142,12 +154,12 @@ public class DeckScreen extends AppCompatActivity implements
 
     @Override
     public void onDoneEditing(String newName) {
-        myName.setText(newName);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(newName);
         me.setDeckName(newName);
         deckDS.updateDeckInDB(me);
     }
 
-    public void onAddCardToDeck(View view) {
+    public void onAddCardToDeck(MenuItem item) {
         long lastKnownId = 0L;
         Intent intent = new Intent(this, AddNewFlashcard.class);
         allcards = flashDS.loadAllFlashcardsFromDB();
@@ -209,7 +221,7 @@ public class DeckScreen extends AppCompatActivity implements
         }
     }
 
-    public void deleteCardsFromDeck(View view) {
+    public void deleteCardsFromDeck(MenuItem item) {
         DeckDeleteCardsDialog dialog = new DeckDeleteCardsDialog();
         Bundle args = new Bundle();
         args.putLong(ID_OF_DECK, me.getId());
@@ -217,7 +229,7 @@ public class DeckScreen extends AppCompatActivity implements
         dialog.show(getSupportFragmentManager(), "DELETE_CARDS_FROM_DECK");
     }
 
-    public void moveCardsFromDeck(View view) {
+    public void moveCardsFromDeck(MenuItem item) {
         DeckMoveCardsDialog dialog = new DeckMoveCardsDialog(this, me.getId(),this);
         dialog.show();
     }
