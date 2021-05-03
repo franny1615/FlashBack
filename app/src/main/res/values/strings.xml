@@ -33,4 +33,7 @@
     <string name="move_to"><u>Move To</u></string>
     <string name="move">Move</string>
     <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="deck">Deck</string>
+    <string name="flashcards">Flashcards</string>
 </resources>
