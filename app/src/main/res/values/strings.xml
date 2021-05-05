@@ -36,4 +36,5 @@
     <string name="delete">Delete</string>
     <string name="deck">Deck</string>
     <string name="flashcards">Flashcards</string>
+    <string name="search">search</string>
 </resources>
