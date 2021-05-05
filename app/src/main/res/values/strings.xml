@@ -37,4 +37,5 @@
     <string name="deck">Deck</string>
     <string name="flashcards">Flashcards</string>
     <string name="search">search</string>
+    <string name="search_all_cards"><u>Search All Cards</u></string>
 </resources>

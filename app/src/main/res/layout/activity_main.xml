@@ -61,10 +61,20 @@
             android:paddingStart="5dp"
             android:paddingRight="5dp"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/flash_actions_add_card"
-            android:layout_toStartOf="@+id/flash_actions_add_card"
+            android:layout_toLeftOf="@+id/flash_actions_search"
+            android:layout_toStartOf="@+id/flash_actions_search"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"  />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/flash_actions_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fabSize="mini"
+            android:src="@drawable/ic_baseline_search_24"
+            android:layout_toLeftOf="@+id/flash_actions_add_card"
+            android:layout_toStartOf="@+id/flash_actions_add_card"
+            android:contentDescription="@string/search"
+            android:onClick="goSearchAllCards"/>
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/flash_actions_add_card"
             android:layout_width="wrap_content"
