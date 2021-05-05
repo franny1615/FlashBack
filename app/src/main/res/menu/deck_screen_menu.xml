@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:title="@string/deck" app:showAsAction="ifRoom">
+    <item
+        android:icon="@drawable/ic_baseline_folder_24"
+        android:title="@string/deck"
+        app:showAsAction="ifRoom">
         <menu>
             <item
                 android:icon="@drawable/ic_baseline_edit_24"
@@ -13,7 +16,10 @@
                 android:title="@string/delete"/>
         </menu>
     </item>
-    <item android:title="@string/flashcards" app:showAsAction="ifRoom">
+    <item
+        android:icon="@drawable/ic_baseline_note_24"
+        android:title="@string/flashcards"
+        app:showAsAction="ifRoom">
         <menu>
             <item
                 android:icon="@drawable/ic_baseline_folder_24"
