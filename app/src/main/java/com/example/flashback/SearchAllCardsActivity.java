@@ -1,6 +1,8 @@
 package com.example.flashback;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.View;
 import android.widget.SearchView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +29,6 @@ public class SearchAllCardsActivity extends AppCompatActivity {
         RecyclerViewAdapter myCardsAdapter = new RecyclerViewAdapter(flashDS.loadAllFlashcardsFromDB(),this);
         searchRecyclerView.setAdapter(myCardsAdapter);
         //
-        // TODO submit empty string
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -43,4 +44,6 @@ public class SearchAllCardsActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void endSearchActivity(View view){finish();}
 }
