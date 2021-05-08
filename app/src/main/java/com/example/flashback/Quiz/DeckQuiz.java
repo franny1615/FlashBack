@@ -1,12 +1,10 @@
 package com.example.flashback.Quiz;
 
-import android.icu.util.ICUUncheckedIOException;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,7 +17,6 @@ import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
     private DeckDataSource deckDS;
@@ -31,6 +28,7 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
     private FlashcardEntity currFlashCard;
     private List<FlashcardEntity> flashcards;
     private int index, size;
+    private Button nextButton;
 
     //OnCreate Methods
     private void setupCardsAndDS() {
@@ -51,29 +49,47 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
         front = findViewById(R.id.quiz_card_front_text);
         back = findViewById(R.id.quiz_card_back_text);
     }
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.deck_quiz_activity);
-
-        setupDeckAndDS();
-        initializeViews();
-        setupCardsAndDS();
-
-        index = 0;
-        size = flashcardIDs.size();
-
-        populateQuizCard();
-    }
-
     private void populateQuizCard() {
         currFlashCard = (FlashcardEntity) flashcards.get(index);
         front.setText(currFlashCard.getFrontText());
         back.setText(currFlashCard.getBackText());
     }
 
-    
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.deck_quiz_activity);
+        index = 0;
+        setupDeckAndDS();
+        initializeViews();
+        setupCardsAndDS();
+        size = flashcardIDs.size();
+        populateQuizCard();
 
+        //Grab the next button and set it up
+        nextButton = findViewById(R.id.next_button);
+        isNextValid();
+
+    }
+
+    public void nextButton(View view)
+    {
+        if (++index < size) { populateQuizCard(); }
+        isNextValid();
+    }
+
+    private void isNextValid()
+    {
+        if (index == size-1)
+        {
+            nextButton.setEnabled(false);
+            nextButton.setBackgroundColor(Color.GRAY);
+        }
+        else{
+            nextButton.setEnabled(true);
+            nextButton.setBackgroundColor(Color.BLUE);
+        }
+    }
     @Override
     public void onClick(View view)
     {
