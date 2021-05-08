@@ -24,6 +24,8 @@ import com.example.flashback.DeckClasses.DeckDialogs.DeckDeleteCardsDialog;
 import com.example.flashback.DeckClasses.DeckDialogs.DeckMoveCardsDialog;
 import com.example.flashback.DeckClasses.DeckDialogs.DeleteDeckDialog;
 import com.example.flashback.DeckClasses.DeckDialogs.EditDeckNameDialog;
+import com.example.flashback.MainActivity;
+import com.example.flashback.Quiz.QuizHome;
 import com.example.flashback.R;
 import com.example.flashback.RecyclerViewAdapters.RecyclerViewAdapter;
 
@@ -117,6 +119,13 @@ public class DeckScreen extends AppCompatActivity implements
     public void deleteDeck(MenuItem item) {
         DeleteDeckDialog dialog = new DeleteDeckDialog();
         dialog.show(getSupportFragmentManager(), "DELETE_DECK");
+    }
+
+    public void openQuiz(MenuItem item)
+    {
+        Intent intent = new Intent(this, QuizHome.class);
+        intent.putExtra(MainActivity.ID_OF_DECK_FOR_QUIZ, me.getId());
+        startActivity(intent);
     }
 
     @Override

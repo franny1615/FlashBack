@@ -27,6 +27,11 @@
                 android:icon="@drawable/ic_baseline_add_24"
                 android:onClick="onAddCardToDeck"
                 android:title="@string/add_card"/>
+            <item
+                android:icon="@drawable/ic_baseline_timer_24"
+                android:onClick="openQuiz"
+                android:title="Quiz"
+                />
         </menu>
     </item>
 </menu>

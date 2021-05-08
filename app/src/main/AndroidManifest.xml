@@ -21,6 +21,12 @@
             android:name=".EditCard.EditFlashCard"
             android:parentActivityName=".MainActivity" />
         <activity
+            android:name=".Quiz.QuizHome"
+            android:parentActivityName=".DeckClasses.DeckScreen"/>
+        <activity
+            android:name=".Quiz.DeckQuiz"
+            android:parentActivityName=".Quiz.QuizHome"/>
+        <activity
             android:name=".AddFlashCard.AddNewFlashcard"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".MainActivity">

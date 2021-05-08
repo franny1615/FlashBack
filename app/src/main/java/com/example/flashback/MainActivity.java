@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
     public static String DECK_DELETED_FLAG = "deckDeletedFlagFile";
     public static String ID_OF_DELETED_DECK = "com.example.flashback.MainActivity.IdOfDeletedDeck";
     public static String CURRENT_RUNNING_DECK_ID = "com.example.flashback.MainActivity.CurrentRunningDeckId";
+    public static String ID_OF_DECK_FOR_QUIZ = "ID_OF_DECK_FOR_QUIZ_KEY";
 
     public static long DEFAULT_ID = -1L;
     public static int DEFAULT_POSITION = -1;
