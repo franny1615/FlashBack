@@ -28,7 +28,7 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
     private FlashcardEntity currFlashCard;
     private List<FlashcardEntity> flashcards;
     private int index, size;
-    private Button nextButton;
+    private Button nextButton, prevButton;
 
     //OnCreate Methods
     private void setupCardsAndDS() {
@@ -68,16 +68,18 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
 
         //Grab the next button and set it up
         nextButton = findViewById(R.id.next_button);
+        prevButton = findViewById(R.id.prev_button);
         isNextValid();
-
+        isPrevValid();
     }
 
+    //Next Button Methods
     public void nextButton(View view)
     {
         if (++index < size) { populateQuizCard(); }
         isNextValid();
+        isPrevValid();
     }
-
     private void isNextValid()
     {
         if (index == size-1)
@@ -90,6 +92,26 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
             nextButton.setBackgroundColor(Color.BLUE);
         }
     }
+
+    //Previous Button Methods
+    public void prevButton(View view){
+        if (--index >= 0){ populateQuizCard();}
+        isPrevValid();
+        isNextValid();
+    }
+
+    private void isPrevValid()
+    {
+        if (index == 0){
+            prevButton.setEnabled(false);
+            prevButton.setBackgroundColor(Color.GRAY);
+        }
+        else{
+            prevButton.setEnabled(true);
+            prevButton.setBackgroundColor(Color.BLUE);
+            }
+    }
+
     @Override
     public void onClick(View view)
     {
