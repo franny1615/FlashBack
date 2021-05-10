@@ -55,8 +55,8 @@ public class DeckMoveCardsDialog extends Dialog implements SelectItemRecyclerVie
         setContentView(R.layout.move_cards_out_dialog);
         //
         idsToMove = new ArrayList<>();
-        RecyclerView decksRV = findViewById(R.id.deckScreen_move_cards_selectDeck_recyclerview);
-        RecyclerView cardsRV = findViewById(R.id.deckScreen_move_cards_select_recyclerview);
+        RecyclerView decksRV = findViewById(R.id.r_view_decks_mco);
+        RecyclerView cardsRV = findViewById(R.id.r_view_cards_mco);
         //
         Button move = findViewById(R.id.deckScreen_move_cards_button);
         move.setOnClickListener(this::move);

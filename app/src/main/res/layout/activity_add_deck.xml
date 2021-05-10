@@ -52,7 +52,7 @@
     <RelativeLayout
         android:id="@+id/add_deck_screen_cardactions"
         android:layout_width="wrap_content"
-        android:layout_height="350dp"
+        android:layout_height="300dp"
         android:layout_below="@+id/add_deck_screen_nameactions"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
