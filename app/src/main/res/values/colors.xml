@@ -12,5 +12,6 @@
     <color name="teal_700">#00796B</color>
     <color name="teal_200">#03DAC5</color>
     <color name="white">#FFFFFF</color>
+    <color name="quiz_background">#F4F4F4</color>
 
 </resources>
