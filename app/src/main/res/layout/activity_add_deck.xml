@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DeckClasses.AddDeck"
+    android:orientation="vertical">
+    <TextView
+        android:layout_alignParentTop="true"
+        android:id="@+id/add_deck_screen_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:text="@string/create_a_deck"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+    <RelativeLayout
+        android:layout_below="@+id/add_deck_screen_title"
+        android:id="@+id/add_deck_screen_nameactions"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/deck_createscreen_deck_name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/deck_name"
+            android:textColor="#050505"
+            android:textSize="18sp" />
+        <EditText
+            android:layout_centerVertical="true"
+            android:id="@+id/deck_createscreen_deckname_edittext"
+            android:onClick="saveDeckAdd"
+            android:hint="@string/sample_deck_name"
+            android:layout_toEndOf="@+id/deck_createscreen_deck_name_label"
+            android:layout_toRightOf="@+id/deck_createscreen_deck_name_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/sample_deck_name"
+            android:inputType="text" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/add_deck_screen_cardactions"
+        android:layout_width="wrap_content"
+        android:layout_height="300dp"
+        android:layout_below="@+id/add_deck_screen_nameactions"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/deck_createscreen_cards_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:fontFamily="sans-serif-medium"
+            android:text="@string/select_cards"
+            android:textColor="#050505"
+            android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/deck_createscreen_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/deck_createscreen_cards_label"
+            android:layout_marginTop="10dp"
+            app:layoutManager="LinearLayoutManager" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/add_deck_screen_cardactions"
+        android:id="@+id/add_deck_screen_saveoptions"
+        android:layout_margin="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/deck_createscreen_savebutton"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="50dp"
+            android:layout_marginRight="50dp"
+            android:text="@string/save_button"
+            android:onClick="saveDeckAdd"/>
+        <Button
+            android:id="@+id/deck_create_screen_cancel_button"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="cancelDeckAdd"
+            android:text="@string/cancel_button" />
+    </LinearLayout>
+</RelativeLayout>
