@@ -10,13 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FlashBack">
+        <activity android:name=".SearchAllCardsActivity"></activity>
         <activity
             android:name=".DeckClasses.DeckScreen"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".DeckClasses.AddDeck"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditCard.EditFlashCard"
             android:parentActivityName=".MainActivity" />
@@ -32,6 +33,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

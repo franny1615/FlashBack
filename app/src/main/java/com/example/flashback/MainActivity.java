@@ -248,4 +248,9 @@ public class MainActivity extends AppCompatActivity implements DeckRecyclerViewA
         intent.putExtra(ID_OF_DECK, id);
         startActivity(intent);
     }
+
+    public void goSearchAllCards(View view) {
+        Intent intent = new Intent(this, SearchAllCardsActivity.class);
+        startActivity(intent);
+    }
 }
