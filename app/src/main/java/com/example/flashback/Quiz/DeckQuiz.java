@@ -13,9 +13,11 @@ import com.example.flashback.DataSources.FlashcardsDataSource;
 import com.example.flashback.DatabaseTables.DeckEntity;
 import com.example.flashback.DatabaseTables.FlashcardEntity;
 import com.example.flashback.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.wajahatkarim3.easyflipview.EasyFlipView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
@@ -29,11 +31,15 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
     private List<FlashcardEntity> flashcards;
     private int index, size;
     private Button nextButton, prevButton;
+    private boolean shuffleCards;
+    private FloatingActionButton closeButton;
 
     //OnCreate Methods
     private void setupCardsAndDS() {
         flashcards = new ArrayList<>();
         flashcardIDs = deck.getCardIDs();
+        if (shuffleCards)
+            Collections.shuffle(flashcardIDs);
         flashcardDS = new FlashcardsDataSource(this);
         for (Long flashcardID: flashcardIDs) {
             flashcards.add(flashcardDS.getSingleFlashcardById(flashcardID));
@@ -41,7 +47,7 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
     }
     private void setupDeckAndDS(){
         deckDS = new DeckDataSource(this);
-        Long deckID = (Long) getIntent().getLongExtra(QuizHome.QUIZ_HOME_KEY, 0);
+        Long deckID = (Long) getIntent().getLongExtra(QuizHome.QUIZ_HOME_KEY_DECK_ID, 0);
         deck = deckDS.getSingleDeckByID(deckID);
     }
     private void initializeViews() {
@@ -62,6 +68,7 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
         index = 0;
         setupDeckAndDS();
         initializeViews();
+        shuffleCards = getIntent().getBooleanExtra(QuizHome.QUIZ_HOME_KEY_SHUFFLE, false);
         setupCardsAndDS();
         size = flashcardIDs.size();
         populateQuizCard();
@@ -71,6 +78,15 @@ public class DeckQuiz extends AppCompatActivity implements View.OnClickListener{
         prevButton = findViewById(R.id.prev_button);
         isNextValid();
         isPrevValid();
+
+        closeButton = findViewById(R.id.close_quiz_button);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+
+        });
     }
 
     //Next Button Methods
