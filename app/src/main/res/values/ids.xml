@@ -3,4 +3,9 @@
     <item name="text_cardview" type="id" />
     <item name="card_back" type="id" />
     <item name="card_front" type="id" />
+    <item name="swiper" type="id" />
+    <item name="bottom_wrapper" type="id" />
+    <item name="deleteButtonSingleCard" type="id" />
+    <item name="editButtonSingleCard" type="id" />
+    <item name="Button01" type="id" />
 </resources>

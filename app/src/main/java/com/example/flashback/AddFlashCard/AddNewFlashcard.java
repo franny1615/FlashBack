@@ -1,9 +1,12 @@
 package com.example.flashback.AddFlashCard;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,12 +19,24 @@ import static com.example.flashback.MainActivity.ID_NEW_CARD;
 import static com.example.flashback.MainActivity.LAST_KNOWN_ID;
 
 public class AddNewFlashcard extends AppCompatActivity {
-
+    Button BSelectImage;
+    ImageView IVPreviewImage;
+    int SELECT_PICTURE = 200;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_flashcard);
+        BSelectImage = findViewById(R.id.BSelectImage);
+        IVPreviewImage = findViewById(R.id.IVPreviewImage);
+        BSelectImage.setOnClickListener(v -> imageChooser());
+    }
+    void imageChooser() {
+        Intent i = new Intent();
+        i.setType("image/*");
+        i.setAction(Intent.ACTION_GET_CONTENT);
+
+        startActivityForResult(Intent.createChooser(i, "Select Picture"), SELECT_PICTURE);
     }
 
     public void saveNewCard(View view)
@@ -40,7 +55,6 @@ public class AddNewFlashcard extends AppCompatActivity {
         flashcardDS.insertFlashcardIntoDB(flashcard);
 
         Intent intent = new Intent();
-        // if there was a duplicate, new card doesn't exist
         if(flashcardDS.getSingleFlashcardById(flashcard.getId()) == null) {
             intent.putExtra(ID_NEW_CARD,DEFAULT_ID);
         }else{
@@ -55,4 +69,17 @@ public class AddNewFlashcard extends AppCompatActivity {
         setResult(RESULT_CANCELED,null);
         finish();
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PICTURE) {
+                Uri selectedImageUri = data.getData();
+                if (null != selectedImageUri) {
+                    IVPreviewImage.setImageURI(selectedImageUri);
+                }
+            }
+        }
+    }
 }
+
